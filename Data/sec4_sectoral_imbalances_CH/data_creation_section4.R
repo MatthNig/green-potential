@@ -2,14 +2,10 @@
 # Purpose: Use this Script to get the data #      
 #          on emissions (Eurostat),        #
 #          trade (EZV) and GDP (OECD)      #
-# Date:    11.05.2020                      #
+# Date:    15.05.2020                      #
 # Authors: Matthias Niggli, CIEB/Uni Basel #
 #          Christian Rutzer, CIEB/Uni Basel# 
 ############################################
-
-
-### ADJUST ALL PATHs for SAVING with getwd()!!!!
-
 
 
 ############# load packages ############# 
@@ -143,7 +139,7 @@ ValueAdded <- NULL
 Greenness_Shortage_ISCO_NOGA <- read.csv(paste(path, "/Daten/erstellte daten/Greenness_Shortage_NOGA_Region.csv", sep= ""),
                                          encoding = "UTF-8", sep=";", 
                                          header=T, row.names = 1)
-NOGAS_NAMES <- read.csv2(paste(path,"/R Codes/Dynamic output/data_creation/sec4_sectoral_imbalances_CH/NOGAsectorsTitle.csv",sep = ""),
+NOGAS_NAMES <- read.csv2(paste(getwd(),"/Data/sec4_sectoral_imbalances_CH/NOGAsectorsTitle.csv",sep = ""),
                          stringsAsFactors = FALSE, colClasses = "character")[, 1:2]
 
 ############# define subsetting parameters: ############# 
@@ -169,7 +165,7 @@ THRES <- seq(0.4, 0.8, by = 0.01)
 
 ############# create dataset: ############# 
 # get helper functions:
-source(paste(path, "/R Codes/Dynamic output/data_creation/sec4_sectoral_imbalances_CH/functions_section4.R", sep=""))
+source(paste(getwd(), "/Data/sec4_sectoral_imbalances_CH/functions_section4.R", sep=""))
 
 # Note: for every possible green potential cut-off, the code below calculates the folowwing:
 #       (see the code for the helper functions "weighting_fun" and "plot_data_fun" for further infos)
@@ -186,5 +182,5 @@ for(e in 1:length(df_list)){
 # concated to a single data.frame and add NOGA_NAMES
 df <- bind_rows(df_list)
 df <- merge(df, NOGAS_NAMES, by = "NOGA2digit")
-#saveRDS(df, paste(path, "/R Codes/Dynamic output/data_section4.rds", sep = ""))
+#saveRDS(df, paste(getwd(), "/Report/data_section4.rds", sep = ""))
 

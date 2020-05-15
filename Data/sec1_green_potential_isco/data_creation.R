@@ -1,5 +1,7 @@
 ## Datengenerierung für Web-App "green potential" / CR 10.2.2020
 
+
+############# load packages ############# 
 require(foreign)
 require(dplyr)
 require(ggplot2)
@@ -20,6 +22,18 @@ library('scales')
 require(rlist)
 library("rworldmap")
 library("maps")
+
+############# set path #############
+mainDir1 <- "C:/Users/nigmat01/Dropbox/NFP 73 (WWZ intern)"
+mainDir2 <- "C:/Users/Matthias/Dropbox/NFP 73 (WWZ intern)"
+mainDir3 <- "C:/Users/christian rutzer/Dropbox/NFP 73 (WWZ intern)"
+if (file.exists(mainDir1)==T){
+        path <- mainDir1}else{
+                if (file.exists(mainDir2)){
+                        path <- mainDir2}else{
+                                path <- mainDir3}
+        }
+
 
 lasso.pred.table <- read.csv2("C:/Users/christian rutzer/Dropbox/NFP 73/Output/paper green potential in europe/Daten/lasso_three_isco.csv")
 dat.2011 <- readRDS("X:/_shared/Projekt - Green Open Economy/dat.2011.ml.RDS")
