@@ -1,5 +1,5 @@
 ## Datengenerierung für Web-App "green potential" part III green potential shortages isco / CR 13.5.2020
-
+###TEST
 require(foreign)
 require(dplyr)
 require(ggplot2)
