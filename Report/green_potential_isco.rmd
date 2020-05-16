@@ -20,6 +20,7 @@ library(cowplot)
 library(plotly)
 library(viridis)
 library(autoimage)
+library(shinyWidgets)
 ```
 
 <br>
@@ -30,7 +31,6 @@ library(autoimage)
 [![Foo](bss_logo.jpg){ width=12% }](http://www.bss-basel.ch/)&nbsp;&nbsp;
 
 ## <font color="green"> **Greening and the Labor Market** </font>
-#### <font color="green"> The green potential of occupations, countries and the Swiss Economy </font>
 
 *Mai 2020*
 
@@ -170,8 +170,17 @@ renderText({
 <br>
 
 #### <font color='green'> **Labor shortages and skill imbalances in Switzerland**</font>
-PROBLEM: SHORTAGE INDICATOR NOT AVAILABLE FOR A LOT OF OCCUPTIONS -> MICHAEL FRAGEN
-*Table XX: Skills shortage of occupations.*
+<font color='red'> PROBLEM: SHORTAGE INDICATOR NOT AVAILABLE FOR A LOT OF OCCUPTIONS -> MICHAEL FRAGEN</font>
+
+MN: Habe gemerkt, dass ich dasselbe Problem habe. Ich habe bei Michael angefragt als ich mit dem Sammelband begann und habe von ihm dieses .csv hier bekommen: *./Dropbox/NFP 73/Output/paper green potential in europe/Daten/indicators-4digit.xlsx*
+Mir gibt es da 277 ISCOs an. Für green.potential habe ich diese Liste verwendet: *./Dropbox/NFP 73 (WWZ intern)/Daten/ISCO/isco_list.csv*. Hier komme ich auf 323 iscos 
+
+=> 46 Missings bei Michaels Daten.
+
+=> unbedingt darauf achten, dass wir uns hier auf die gleichen Daten beziehen!!!
+
+<br>
+
 ```{r, echo = F}
 sec3_dat <- readRDS("data_section3.rds")
 renderDT(
@@ -217,7 +226,7 @@ renderPlotly({
                 geom_text(aes(label=NOGA2digit), size=3, check_overlap = FALSE, nudge_x = +0.07, nudge_y = +0.02)+
                 xlab("Tradeability")+
                 ylab("Greenhouse gas emissions per value added")+
-                scale_color_viridis(option="viridis", begin = 0.8, end = 0.2, discrete = FALSE, name = "None")+
+                scale_color_viridis(option="viridis", begin = 0.7, end = 0.5, discrete = FALSE, name = "None")+
                 guides(color = FALSE)+
                 theme(axis.title = element_text(face="bold",size=10),
                       panel.background = element_blank(),
@@ -231,79 +240,99 @@ renderPlotly({
         })
 ```
 
+<br>
+
 ```{r, echo = F}
-# define the input panel: -------------------------------------------------------------------------
-wellPanel(inputPanel(
-        # select green potential cut-off
-	sliderInput("cutOff", width = '100%',
-                            label="Cut-off for green potential",
-                            min=0.40000,
-                            max=0.80000,
-                            value=0.5000000,
-                           step=0.0100000)
-	),
-	# select Regions
-	checkboxGroupInput(inputId = "REGIONEN",
-	                   label = "Regions",
-	                   inline = TRUE, # make list of boxes horizontally
-	                   choices =  REGIONEN,
-	                   selected = "Schweiz"),
-        # select NOGAS:
-        checkboxGroupInput(inputId = "NOGAS",
-                           label = "Industries",
-                           inline = TRUE, # make list horizontally
-                           choiceValues = NOGAS,
-                           choiceNames = NOGAS_NAMES,
-                           selected = NOGAS)
-)
+# define the input panels: -------------------------------------------------------------------------
 
+
+fluidRow(
+        column(4,
+pickerInput(
+  inputId = "REGIONEN", 
+  label = "Choose a region", 
+  choices = REGIONEN, 
+  selected = "Schweiz",
+  options = list(
+    `actions-box` = TRUE, 
+    `selected-text-format` = "count > 3",
+    `count-selected-text` = "Alle",
+    `deselect-all-text` = "Discard all",
+    `select-all-text` = "Seclect all",
+    `none-selected-text` = 'No regions selected'), 
+  multiple = FALSE)
+),
+column(4,
+pickerInput(
+  inputId = "NOGAS_NAMES", 
+  label = "Choose industries", 
+  choices = NOGAS_NAMES, 
+  selected = NOGAS_NAMES,
+  options = list(
+    `actions-box` = TRUE, 
+    size = 10,
+    `selected-text-format` = "count > 3",
+    `count-selected-text` = "All",
+    `deselect-all-text` = "Discard all",
+    `select-all-text` = "Select all",
+    `none-selected-text` = 'No industries selected'), 
+  multiple = TRUE)
+)
+)
+```
+
+
+```{r, echo = F}
 # define the output panel : -------------------------------------------------------------------------
-wellPanel(
-        renderPlotly({
+renderPlotly({
                 
-                # subset the data accoding to the input: 
-                plot2_data <- subset(sec4_dat,
-                       round(THRES, 2) == input$cutOff & # selected cutOff (use round() to make sure numbers match)
-                       Region %in% input$REGIONEN & # selected Region(s)
-                       NOGA2digit %in% input$NOGAS # selected NOGAS
-                       )
+        # subset the data accoding to the input:
+        
+        NOGAS <- sec4_dat[sec4_dat$NOGAS_NAMES %in% input$NOGAS_NAMES, "NOGA2digit"] # get selected NOGA codes
+        
+        plot2_data <- subset(sec4_dat,
+               round(THRES, 2) == input$cutOff & # selected cutOff (use round() to make sure numbers match)
+               Region %in% input$REGIONEN & # selected Region(s)
+               NOGA2digit %in% NOGAS # selected NOGA codes 
+               )
 
-                # make the plot
-                ggplotly(
-                        ggplot(data = plot2_data, aes(x = green_emp_share, y= WeightedShortageGreen ))+
-                        geom_point(aes(color=Region), size = 4, alpha = 0.7)+
-                        geom_text(aes(label=NOGA2digit), size=3, check_overlap = FALSE, nudge_x = +0.01, nudge_y = +0.02)+
-                        geom_hline(yintercept = 0, linetype = "dotted")+
-                        xlab(paste("Beschaeftigungsanteil von Arbeitskraeften mit gruenem Potential \n (Region: ",
-                                   paste0(input$REGIONEN, collapse = " & "),", Cut-off: ",input$cutOff,")", sep=""))+
-                        ylab(paste("Knappheit an Arbeitskraeften mit gruenem Potential \n (Region: ", 
-                                   paste0(input$REGIONEN, collapse = " & "),", Cut-off: ", input$cutOff,")",sep = ""))+
-                        geom_smooth(method = "lm", se=FALSE)+
-                        ylim(-0.5,3.5)+
-                        xlim(0,0.45)+
-                        scale_color_viridis(option="viridis",
-                                            begin = 0.3, end = 0.8,
-                                            discrete = TRUE,
-                                            name = "Region")+
-                        theme(axis.title = element_text(face="bold",size=10),
-                              panel.background = element_blank(),
-                              axis.line = element_line()
-                              ),
-                        
-                        tooltip = c("label"), dynamicTicks = T) %>%
-                        config(displayModeBar = T) %>% 
-                        layout(xaxis=list(fixedrange=TRUE)) %>% 
-                        layout(yaxis=list(fixedrange=TRUE))
-                })
-)
+        # make the plot
+        ggplotly(
+                ggplot(data = plot2_data, aes(x = green_emp_share, y= WeightedShortageGreen ))+
+                geom_point(aes(color = log(GHG_per_ValueAdded)), size = 4, alpha = 0.7)+
+                geom_text(aes(label = NOGA2digit), size=3, check_overlap = FALSE, nudge_x = +0.01, nudge_y = +0.02)+
+                xlab(paste("Employment share of jobs with  green potential \n (Region: ",
+                           paste0(input$REGIONEN, collapse = " & "),", green potential >= ",input$cutOff,")", sep=""))+
+                ylab(paste("Shortage of jobs with green potential \n (Region: ", 
+                           paste0(input$REGIONEN, collapse = " & "),", green potential >= ", input$cutOff,")",sep = ""))+
+                ylim(-0.5,7)+
+                xlim(0,0.5)+
+                scale_color_viridis(option="viridis",
+                                    begin = 0.7, end = 0.5,
+                                    discrete = FALSE,
+                                    name = "None")+
+                guides(color = FALSE)+
+                theme(axis.title = element_text(face="bold",size = 10),
+                      panel.background = element_blank(),
+                      axis.line = element_line()
+                      ),
+                
+                tooltip = c("label"), dynamicTicks = T) %>%
+                config(displayModeBar = T) %>% 
+                layout(xaxis = list(fixedrange=TRUE)) %>% 
+                layout(yaxis = list(fixedrange=TRUE))
+        })
+```
 
-
-# use selectizGroupUI() instead of checkbox:
-# https://www.davidsolito.com/post/conditional-drop-down-in-shiny/ (Example 8)
-# https://shiny.rstudio.com/articles/selectize.html
-# https://www.rdocumentation.org/packages/shinyWidgets/versions/0.5.0/topics/selectizeGroup-module
-
-
+```{r, echo = F}
+# make a slider input for the treshold ----------------------------------------------
+sliderInput("cutOff",
+            width = '100%',
+            label="Choose a green potential threshold",
+            min=0.40000,
+            max=0.80000,
+            value=0.5000000,
+            step=0.0100000)
 ```
 
 
