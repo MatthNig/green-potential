@@ -1,5 +1,5 @@
 #############################################
-# Purpose: Defines the functions necessary  #      
+# Purpose: Defines necessary functions      #      
 #          to run the graph in section 4    #
 #          of the shiny application         #
 # Date:    11.05.2020                       #
@@ -9,7 +9,7 @@
 
 weighting_fun <- function(thres){
         
-        # discard NOGAs that do not have at least 50 observations in the SAKE
+        # discard NOGAs that do not have at least 50 observations in the SAKE 2019 data
         NOGA_discard <- Greenness_Shortage_ISCO_NOGA %>% 
                 group_by(NOGA2digit) %>% 
                 summarise(n_obs = n()) %>% 
@@ -23,7 +23,7 @@ weighting_fun <- function(thres){
         Greenness_Shortage_ISCO_NOGA[,c("isco","NOGA2digit", "Region")] <- sapply(Greenness_Shortage_ISCO_NOGA[,c("isco","NOGA2digit", "Region")],
                                                                                   as.character)
         
-        # calculate weights and employment shares at the national level
+        # calculate isco weights and employment shares at the national level
         weight_national <- Greenness_Shortage_ISCO_NOGA%>%
                 group_by(NOGA2digit, isco)%>%
                 summarise(ISCO_count = sum(Gewicht))
@@ -35,7 +35,7 @@ weighting_fun <- function(thres){
         weight_national <- mutate(weight_national, weight = ISCO_count / NOGA_count, Region = "Schweiz")
         weight_national <- weight_national[, c(6,1:5)]
         
-        # calculate weights at the cantonal level
+        # calculate isco weights at the cantonal level
         weight_cantonal <- Greenness_Shortage_ISCO_NOGA%>%
                 group_by(Region, NOGA2digit, isco)%>%
                 summarise(ISCO_count = sum(Gewicht))
@@ -46,23 +46,24 @@ weighting_fun <- function(thres){
         weight_cantonal <- merge(weight_cantonal, tmp, by = c("Region", "NOGA2digit"))
         weight_cantonal <- mutate(weight_cantonal, weight = ISCO_count / NOGA_count)
         
-        # return all calculated weights in one dataframe:
+        # return all calculated isco weights in one dataframe:
         SAKE_weights <- rbind(weight_national, weight_cantonal)
         
         return(SAKE_weights)
 }
 
-# define a second function that calculates the following:
-#       1) industry-level shortage weighted accordings to some threshold for green jobs
-#       2) employment shares of these green jobs at the industry level
-#       3) combine this with trade and emission data
+# Now define a second function that calculates the following:
+#       1) employment-weighted industry-level shortages of green jobs (accordings to some threshold for green jobs)
+#       2) the combined employment share of these green jobs at the industry level (accordings to some threshold for green jobs)
+#       3) add trade and CO2-equivalents emission data
+
 plot_data_fun <- function(thres, Regionen = "Schweiz", NOGAs){
         
         # define green jobs according to threshold 
         green_jobs <- subset(Greenness_Shortage_ISCO_NOGA, norm_lasso_task >= thres)
         green_jobs <- green_jobs[!duplicated(green_jobs$isco), ]
         
-        # TEST: print a warning message if not all weights sum to 1 -----------------
+        # TEST: print a warning message if not all isco weights sum to 1 -----------------
         test <- weighting_fun(thres = thres)
         test <- test %>% group_by(Region, NOGA2digit) %>% summarise_at(.vars = "weight", .funs = sum)
         if(unique(round(test$weight, 1)) != 1){warning("Sectoral ISCO weights do not sum to 1!")}
@@ -92,7 +93,7 @@ plot_data_fun <- function(thres, Regionen = "Schweiz", NOGAs){
         plot_data$WeightedShortageGreen <- plot_data$weight*plot_data$shortage_index
         plot_data$WeightedShortageGreen_norm <- plot_data$weight*plot_data$shortage_index_norm
         
-        # aggregate shortage_index at the industry-level:
+        # aggregate shortage_index at the industry-level (i.e. a weighted sum of isco-level shortages):
         plot_data <- plot_data %>%
                 group_by(Region, NOGA2digit) %>%
                 summarise(WeightedShortageGreen = sum(WeightedShortageGreen, na.rm = TRUE),

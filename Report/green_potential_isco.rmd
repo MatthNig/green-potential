@@ -41,39 +41,15 @@ library(shinyWidgets)
 
 <br>
 
-Due to the urgency of climate change, the transformation towards a sustainable economy is becoming increasingly important. Without a doubt, such a green transition is a major structural change for an economy and especially for the labor market. From a policy perspective, it is for example important to know which occupations are likely to be affected positively and which negatively. Moreover, it is also valuable to have information about labor shortages of occupations that may be in high demand when such a transformation occurs.
+Think about a country that decides to transform towards a greener and more sustainable economy. Such a Green Transition is a major structural change which is likely to induce shifts in the demand for products and technologies. At the same time, of course, it has also an effect on labor markets. For example, skills requirements in some occupations are likely to change (e.g. knowledge of electro engines instead), the demand for green tasks increases (e.g. installations of solar panels) and rather pollution-intensive tasks might vanish completely over the long run (e.g. coal mining). An important concern is therefore whether labor markets can cope with these implied changes (see for example work from Vona et al. 2018; Bowen et al., 2016; Consoli et al. 2016 or Martinez-Fernandez et al., 2010).
 
-To this end, we develop an approach that allows us to determine the potential of an occupation to contribute to such a green transition (the so-called "green potential“ of an occupation). Using the green potential at the occupational level enables us to address various issues. 
 
-In the following, we first illustrate our approach. Afterwards, we give you, the reader, the possibility to compare the green potential of various occupations with each other. Finally, you can also investigate the green potential of labor markets of different countries. Be excited!  
-<br>
-
-##### <font color='green'> **The Green Potential of Occupations** </font>
-
-Figure 1 illustrates our approach to estimate the green potential of occupations. For a detailed description, we refer to a recent [Working Paper](https://ideas.repec.org/p/bsl/wpaper/2020-03.html) of us. In short, the green potential of an occupation depends on whether it can fulfill the tasks that are demanded in a green economy. This, in turn, depends on the skills that workers possess. The <a href="https://www.onetcenter.org/reports/GreenTask.html" target = "_blank">O*NET</a> database features information on “green tasks” as well as on skills for every U.S. occupation classified according to the <a href="https://www.bls.gov/soc/" target = "_blank">SOC classification</a>. 
-
-Using the skill values as input features $X_i$ and the number of green tasks as the outcome $Y_i$  allows us to train machine learning algorithms that predict the “green potential” of U.S. occupations. We have trained four standard algorithms: <a href="https://en.wikipedia.org/wiki/Ordinary_least_squares" target = "_blank">Simple OLS</a>, <a href="https://en.wikipedia.org/wiki/Lasso_(statistics)" target = "_blank">LASSO</a>, <a href="https://en.wikipedia.org/wiki/Random_forest">Random Forest</a> and <a href="https://en.wikipedia.org/wiki/Tikhonov_regularization" target = "_blank">Ridge regression</a>, among which the Ridge regression showed the best prediction performance.
+We have investigated questions like this in a reserach project, which is funded by the Swiss National Science Foundation (SNF/NRP-73). With this report, we provide an overview of the project’s main findings and discuss some of the possible implications for the Swiss economy. 
 
 <br>
 
-<figure> 
-<figcaption> *How to estimate the green potential of occupations* </figcaption>
-  <img src="fig_ml.png" alt="my alt text"/>
-</figure>
+#### <font color='green'> **The Green Potential of Occupations** </font>
 
-<br>
-
-Certainly, the green transition is not a U.S. specific phenomenon and, therefore, we have also evaluated the “green potential” of <a href="https://www.ilo.org/public/english/bureau/stat/isco/" target = "_blank">ISCO occupations</a>. ISCO is a classification scheme that is used worldwide and, in particular, also in Switzerland. We have used a crosswalk between the U.S. SOC classification and the ISCO classification to transfer skill values of U.S. occupations from the O*NET database to ISCO occupations. With this, we have obtained skills values for ISCO occupations, which we then used as input variables $X_i$ in our trained Ridge regression to predict the “green potential” of ISCO occupations. 
-
-The following Table 1 shows our estimated green potential of various ISCO occupations. As you can see, the Ridge regression assigns technical and engineering occupations the highest green potential values. This is because such occupations can directly make production processes or products more sustainable. And what green potential do you think has your occupation? Feel free to compare the green potential of your occupation with other occupations based on three selection criteria: 
-
-+ **ISCO**: The selection is based on ISCO-codes. 
-
-+ **Occupation**: The selection is based on occupation-titles. 
-
-+ **Estimated Green Potential**: Choose a range of green potential values and see which occupations are part of it.
-
-<br>
 
 ```{r, echo = F}
 # get the data:
@@ -96,14 +72,6 @@ renderDT(
         )
 ```
 <span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data.  All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
-
-<br>
-
-##### <font color='green'> **Green Potential in European Countries** </font>
-
-In the previous section, we illustrated our idea to estimate the green potential at the level of occupations. By using the green potential at the occupation level, one can calculate the share of a country's workforce having a green potential above a specific value. For European countries, this is plotted in the map below of Figure 2. The greener a country on the map, the higher is it’s share of workers who are employed in occupations with high green potential. 
-
-In general, in countries like Germany, France, Switzerland or the Scandinavian countries, a relatively high share of persons are employed in occupations above the cut-off. Thus, at least in comparison to other Eurpean countries, these countries seems to be well prepared for a green transition. Now it's your turn. By varying the cut-off, you can observe how the share of each country's workforce changes! 
 
 ```{r, echo = F}
 # prepare the data for the map ----------------------------------------------
@@ -177,7 +145,9 @@ renderText({
 
 <br>
 
-#### <font color='green'> **Labor shortages and skill imbalances in Switzerland**</font>
+#### <font color='green'> **The Green Transition in Switzerland** </font>
+
+
 <font color='red'> PROBLEM: SHORTAGE INDICATOR NOT AVAILABLE FOR A LOT OF OCCUPTIONS -> MICHAEL FRAGEN</font>
 
 MN: Habe gemerkt, dass ich dasselbe Problem habe. Ich habe bei Michael angefragt als ich mit dem Sammelband begann und habe von ihm dieses .csv hier bekommen: *./Dropbox/NFP 73/Output/paper green potential in europe/Daten/indicators-4digit.xlsx*
@@ -209,8 +179,7 @@ renderDT(
 ```
 <span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data.  All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
 
-
-#### <font color='green'> **Green Potential and labor shortage in Swiss industries** </font>
+<br>
 
 ```{r, echo = F}
 #### load the data and define input parameters for plotting -------------------------------------------------
@@ -218,20 +187,19 @@ sec4_dat <- readRDS("data_section4.rds")
 REGIONEN <- as.character(unique(sec4_dat$Region))
 NOGAS <- unique(sec4_dat$NOGA2digit)
 NOGAS_NAMES <- unique(sec4_dat$NOGAS_NAMES)
-```
-
-```{r, echo = FALSE, warning = FALSE}
 plot1_data <- subset(sec4_dat, 
                      NOGA2digit %in% NOGAS & 
                              NOGA2digit != 24 & # discard outlier
                              THRES == 0.4 & # set a random threshold. plot does not depend on it
                              Region == "Schweiz")
+
+# make the plot: 
 renderPlotly({
         ggplotly(
                 ggplot(data = plot1_data, aes(x = Handelbarkeit, y= log(GHG_per_ValueAdded),
                                               color = log(GHG_per_ValueAdded)))+
                 geom_point(size = 4, alpha = 0.7)+
-                geom_text(aes(label=NOGA2digit), size=3, check_overlap = FALSE, nudge_x = +0.04, nudge_y = +0.02)+
+                geom_text(aes(label = NOGA2digit), size = 3, check_overlap = FALSE, nudge_x = +0.08, nudge_y = +0.05)+
                 xlab("Tradeability")+
                 ylab("Greenhouse gas emissions per value added")+
                 scale_color_viridis(option="viridis", begin = 0.7, end = 0.5, discrete = FALSE, name = "None")+
@@ -246,12 +214,12 @@ renderPlotly({
                 layout(yaxis=list(fixedrange=TRUE))
         })
 ```
+<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data. All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
 
 <br>
 
 ```{r, echo = F}
 # define the input panels: -------------------------------------------------------------------------
-
 fluidRow(
         column(4,
 pickerInput(
@@ -285,8 +253,16 @@ pickerInput(
   multiple = TRUE)
 )
 )
-```
 
+# make a slider input for the treshold ----------------------------------------------
+sliderInput("cutOff",
+            width = '100%',
+            label="Choose a green potential threshold",
+            min=0.40000,
+            max=0.80000,
+            value=0.5000000,
+            step=0.0500000)
+```
 
 ```{r, echo = F}
 # define the output panel : -------------------------------------------------------------------------
@@ -306,17 +282,15 @@ renderPlotly({
         ggplotly(
                 ggplot(data = plot2_data, aes(x = green_emp_share, y= WeightedShortageGreen ))+
                 geom_point(color = "blue4", size = 4, alpha = 0.7)+
-                geom_text(aes(label = NOGA2digit), size=3, check_overlap = FALSE, nudge_x = +0.01, nudge_y = +0.02)+
+                geom_text(aes(label = NOGA2digit), size = 3, check_overlap = FALSE, nudge_x = +0.01, nudge_y = +0.02)+
                 xlab(paste("Employment share of jobs with  green potential \n (Region: ",
-                           paste0(input$REGIONEN, collapse = " & "),", green potential >= ",input$cutOff,")", sep=""))+
+                           paste0(input$REGIONEN, collapse = " & "),
+                           ", green potential of at least ",input$cutOff,")", sep=""))+
                 ylab(paste("Shortage of jobs with green potential \n (Region: ", 
-                           paste0(input$REGIONEN, collapse = " & "),", green potential >= ", input$cutOff,")",sep = ""))+
-                ylim(-0.5,7)+
-                xlim(0,0.5)+
-                # scale_color_viridis(option="viridis",
-                #                     begin = 0.7, end = 0.5,
-                #                     discrete = TRUE,
-                #                     name = "None")+
+                           paste0(input$REGIONEN, collapse = " & "),
+                           ", green potential of at least ", input$cutOff,")",sep = ""))+
+                ylim(-0.5, 7)+
+                xlim(0, 0.5)+
                 guides(color = FALSE)+
                 theme(axis.title = element_text(face="bold",size = 10),
                       panel.background = element_blank(),
@@ -329,17 +303,7 @@ renderPlotly({
                 layout(yaxis = list(fixedrange=TRUE))
         })
 ```
-
-```{r, echo = F}
-# make a slider input for the treshold ----------------------------------------------
-sliderInput("cutOff",
-            width = '100%',
-            label="Choose a green potential threshold",
-            min=0.40000,
-            max=0.80000,
-            value=0.5000000,
-            step=0.0500000)
-```
+<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data.  All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
 
 
 
