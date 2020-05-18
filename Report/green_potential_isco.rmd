@@ -76,19 +76,24 @@ The following Table 1 shows our estimated green potential of various ISCO occupa
 <br>
 
 ```{r, echo = F}
-    isco_list <- read.csv2("isco_list.csv")
-    isco_list <- mutate(isco_list, ISCO = as.character(ISCO), green = as.numeric(as.character(green)))
-    colnames(isco_list) <- c("ISCO", "Occupation", "Estimated Green Potential")
-   renderDT(
-        datatable(isco_list, 
+# get the data:
+isco_list <- read.csv2("isco_list.csv")
+isco_list <- mutate(isco_list, ISCO = as.character(ISCO), green = as.numeric(as.character(green)))
+colnames(isco_list) <- c("ISCO", "Occupation", "Estimated Green Potential")
+
+# make the table
+renderDT(
+        datatable(isco_list,
                   class = "display nowrap compact", # style
                   filter = "top", # location of column filters
                   rownames= FALSE,
-                  # fillContainer = FALSE,
-                  options = list(pageLength = 20, dom = 'tp', columnDefs=list(list(targets=0:2, className="dt-left")))) %>% formatStyle(columns = c("Estimated Green Potential", "Estimated Green Potential"), backgroundColor = styleInterval(seq(0,1,0.05), colorRampPalette(c(rgb(0,0,0.1,0.1),rgb(0,1,0,0.7)), alpha=TRUE)(22))), # data
-
-        # formatStyle(columns = "Estimated Green Potential", target = "cell", backgroundColor = "#F7080880")
-    )
+                  options = list(pageLength = 20, dom = 'tp', 
+                                 columnDefs=list(list(targets=0:2, className="dt-left")))) %>% 
+                formatStyle(columns = c("Estimated Green Potential", "Estimated Green Potential"), 
+                            backgroundColor = styleInterval(seq(0,1,0.05),
+                                                            colorRampPalette(c(rgb(0,0,0.1,0.1),
+                                                                               rgb(0,1,0,0.7)), alpha=TRUE)(22)))
+        )
 ```
 <span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data.  All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
 
@@ -121,10 +126,12 @@ sliderInput("cut",
             min=0.40000,
             max=0.80000,
             value=0.5000000,
-            step=0.0100000)
+            step=0.0500000)
 
 # make the reactive plot ----------------------------------------------
 renderPlotly({
+        
+        # get the data according to the cut-off:
         dat <- mydata()
 	dat <- mutate(dat, 
 	              share_green = round(share_green, 4), 
@@ -163,7 +170,8 @@ renderPlotly({
 renderText({
     dat <- mydata()
     paste0("   ",
-    "When setting the cut-off to ", input$cut, ", ", round(unique(dat[dat$iso == "CHE", "share_green"])*100, 0), "% of Switzerland's workforce has a green potential above this value. In comparison, the country with the largest share is ",  unique(dat[which(max(dat$share_green)==dat$share_green), "region"])," with ", round(unique(dat[which(max(dat$share_green)==dat$share_green), "share_green"])*100, 0), "% of it's workforce above that cut-off. The country with the lowest share is ", unique(dat[which(min(dat$share_green)==dat$share_green), "region"]), ifelse(round(unique(dat[which(min(dat$share_green)==dat$share_green), "share_green"])*100,0)==0, paste0(" with nearly zero percent."), paste0(" with a share of ", round(unique(dat[which(min(dat$share_green)==dat$share_green), "share_green"])*100, 0), "%.")))
+    "When setting the cut-off to ", input$cut, ", ", round(unique(dat[dat$iso == "CHE", "share_green"])*100, 0),
+    "% of Switzerland's workforce has a green potential above this value. In comparison, the country with the largest share is ", unique(dat[which(max(dat$share_green)==dat$share_green), "region"])," with ", round(unique(dat[which(max(dat$share_green)==dat$share_green), "share_green"])*100, 0), "% of it's workforce above that cut-off. The country with the lowest share is ", unique(dat[which(min(dat$share_green)==dat$share_green), "region"]), ifelse(round(unique(dat[which(min(dat$share_green)==dat$share_green), "share_green"])*100,0)==0, paste0(" with nearly zero percent."), paste0(" with a share of ", round(unique(dat[which(min(dat$share_green)==dat$share_green), "share_green"])*100, 0), "%.")))
 })
 ```
 
@@ -215,15 +223,15 @@ NOGAS_NAMES <- unique(sec4_dat$NOGAS_NAMES)
 ```{r, echo = FALSE, warning = FALSE}
 plot1_data <- subset(sec4_dat, 
                      NOGA2digit %in% NOGAS & 
-                             NOGA2digit != 24 & 
-                             THRES == 0.4 & 
+                             NOGA2digit != 24 & # discard outlier
+                             THRES == 0.4 & # set a random threshold. plot does not depend on it
                              Region == "Schweiz")
 renderPlotly({
         ggplotly(
                 ggplot(data = plot1_data, aes(x = Handelbarkeit, y= log(GHG_per_ValueAdded),
                                               color = log(GHG_per_ValueAdded)))+
                 geom_point(size = 4, alpha = 0.7)+
-                geom_text(aes(label=NOGA2digit), size=3, check_overlap = FALSE, nudge_x = +0.07, nudge_y = +0.02)+
+                geom_text(aes(label=NOGA2digit), size=3, check_overlap = FALSE, nudge_x = +0.04, nudge_y = +0.02)+
                 xlab("Tradeability")+
                 ylab("Greenhouse gas emissions per value added")+
                 scale_color_viridis(option="viridis", begin = 0.7, end = 0.5, discrete = FALSE, name = "None")+
@@ -232,7 +240,6 @@ renderPlotly({
                       panel.background = element_blank(),
                       axis.line = element_line()
                       ),
-                
                 tooltip = c("label"), dynamicTicks = T) %>%
                 config(displayModeBar = T) %>% 
                 layout(xaxis=list(fixedrange=TRUE)) %>% 
@@ -244,7 +251,6 @@ renderPlotly({
 
 ```{r, echo = F}
 # define the input panels: -------------------------------------------------------------------------
-
 
 fluidRow(
         column(4,
@@ -299,7 +305,7 @@ renderPlotly({
         # make the plot
         ggplotly(
                 ggplot(data = plot2_data, aes(x = green_emp_share, y= WeightedShortageGreen ))+
-                geom_point(aes(color = log(GHG_per_ValueAdded)), size = 4, alpha = 0.7)+
+                geom_point(color = "blue4", size = 4, alpha = 0.7)+
                 geom_text(aes(label = NOGA2digit), size=3, check_overlap = FALSE, nudge_x = +0.01, nudge_y = +0.02)+
                 xlab(paste("Employment share of jobs with  green potential \n (Region: ",
                            paste0(input$REGIONEN, collapse = " & "),", green potential >= ",input$cutOff,")", sep=""))+
@@ -307,10 +313,10 @@ renderPlotly({
                            paste0(input$REGIONEN, collapse = " & "),", green potential >= ", input$cutOff,")",sep = ""))+
                 ylim(-0.5,7)+
                 xlim(0,0.5)+
-                scale_color_viridis(option="viridis",
-                                    begin = 0.7, end = 0.5,
-                                    discrete = FALSE,
-                                    name = "None")+
+                # scale_color_viridis(option="viridis",
+                #                     begin = 0.7, end = 0.5,
+                #                     discrete = TRUE,
+                #                     name = "None")+
                 guides(color = FALSE)+
                 theme(axis.title = element_text(face="bold",size = 10),
                       panel.background = element_blank(),
@@ -332,7 +338,7 @@ sliderInput("cutOff",
             min=0.40000,
             max=0.80000,
             value=0.5000000,
-            step=0.0100000)
+            step=0.0500000)
 ```
 
 
