@@ -17,7 +17,7 @@ def shortage_path_fun(user):
 # specify the paths ----------------------------------
 SAKE_path=SAKE_path_fun("X") # set the name where the SAKE data is stored on your computer
 dropbox_path=dropbox_path_fun("Matthias") # set the user name of your machine
-shortage_path=shortage_path_fun("Matthias")
+shortage_path=shortage_path_fun("Matthias") # set the user name of your machine
 print("Libraries are loaded and directories are set.")
 
 #%% LOAD SAKE DATA
@@ -36,28 +36,27 @@ print("number of variables: ", len(SAKE_dat.columns))
 
 #%% SUBSET TO SAKE VARIABLES OF INTEREST
 
-##### sample weights in SAKE 2017:
+##### available sample weights in SAKE:
 # IXHHH         =  "(TOT) Gewichtung Hochrechnung Haushalt - Jahresdaten"                                                                               
 # IXPXH         =  "(TOT) Gewichtung Hochrechnung Zielperson - Quartalsdaten"                                                                           
 # IXPXHJ        =  "(TOT) Gewichtung Hochrechnung Zielperson - Jahresdaten"                                                                             
 # IXPXM1        =  "(TOT) Gewichtung Zielperson - Europäisches Modul (1/3 der Welle 1)"                                                                 
 # IXPXM2        =  "(TOT) Gewichtung Zielperson - Nationales Modul (2/3 der Welle 1)" 
-# => choose IXPXHJ-Variable
+# => choose "IXPXHJ"-Variable
 
-##### Region variables:
+##### available region variables:
 # EM06             "UV (E) Geografische Lage des Betriebs: Kanton"
-# B030          =  "(TOT) Raumplanungsregionen (RPR)" -> very disaggregated does not make sense
-# B029          =  "(TOT) MS-Region (räumliche Mobilität) 2000" -> 106 categories i.e. also too disaggregated
-# B027          =  "(TOT) Arbeitsmarktregion 2000" -> 16 categories
-# B023          =  "(TOT) Grossregion der Wohngemeinde der Zielperson (NUTS II)" 7 categories
-# => choose B023
+# B030          =  "(TOT) Raumplanungsregionen (RPR)"
+# B029          =  "(TOT) MS-Region (räumliche Mobilität) 2000"
+# B027          =  "(TOT) Arbeitsmarktregion 2000"
+# B023          =  "(TOT) Grossregion der Wohngemeinde der Zielperson (NUTS II)"
+# => choose "B023"
 
-#### Subset to "Erwerbstätige" (=B000) and retrieve the following information:
+#### Subset to "Erwerbstätige" (= "B000") and retrieve the following information:
 # BFU5I            "UV (E, L, EL, N) Ausgeübter Beruf: klassiert nach Berufsstruktur ISCO-08"       
 # EM03          =  "(E) Wirtschaftliche Tätigkeit des Betriebs: gemäss BUR (NOGA 2008)"
 # B023          =  "(TOT) Grossregion der Wohngemeinde der Zielperson (NUTS II)"
 # IXPXHJ        =  "(TOT) Gewichtung Hochrechnung Zielperson - Jahresdaten"                                                                             
-
 
 def subSAKE_fun(df):
     df=df.loc[df["B0000"]==1, ["BFU5I", "EM03", "B023", "IXPXHJ", "year"]]
@@ -130,11 +129,10 @@ def shortage_fun(df_NOGA):
     df_NOGA=pd.merge(df_NOGA, shortage, on = "isco", how="left")
     return df_NOGA
         
-
-
 SAKE_dat=shortage_fun(SAKE_dat)
 SAKE_dat.head()
 len(SAKE_dat)
+
 #%% WRITE CSV
 
 #SAKE_dat.to_csv(dropbox_path+"erstellte daten/Greenness_Shortage_NOGA_Region.csv", sep=';')

@@ -1,14 +1,13 @@
-
 ---
 output: 
    html_document:
-      css: https://innoscape.ch/public/css/custom-shiny.css
+      css: style.css
 runtime: shiny
 fig_caption: yes
 ---
 
 ```{r setup, include=FALSE}
-# knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE)
 library(shiny)
 library(ggplot2)
 library(xtable)
@@ -21,118 +20,70 @@ library(cowplot)
 library(plotly)
 library(viridis)
 library(autoimage)
+library(shinyWidgets)
 ```
 
 <br>
 
+[![Foo](cieb_logo.jpg){ width=18% }](http://cieb.unibas.ch/)&nbsp;&nbsp;
 [![Foo](nrp_73_logo.jpg){ width=25% }](http://www.nrp73.ch/)&nbsp;
 [![Foo](snf_logo.png){ width=25% }](http://www.snf.ch/)&nbsp;&nbsp;
-[![Foo](cieb_logo.jpg){ width=18% }](http://cieb.unibas.ch/)&nbsp;&nbsp;
 [![Foo](bss_logo.jpg){ width=12% }](http://www.bss-basel.ch/)&nbsp;&nbsp;
 
+<<<<<<< HEAD
 #### <font color='green'>**Transition to a "Green Open Economy": Labour Market Effects and Implications for the Swiss Economy** </font>
 
 *February 2020. By [Matthias Niggli](https://wwz.unibas.ch/de/personen/matthias-niggli/) and [Christian Rutzer](https://wwz.unibas.ch/de/personen/christian-rutzer/)*
-TEST
+
+=======
+## <font color="green"> **Greening and the Labor Market** </font>
+>>>>>>> c61f93692fe189a7dbb68b4049a6c5e5d53f9cf3
+
+*Mai 2020*
+
+<a href="https://cieb.unibas.ch/de/team/matthias-niggli/" target = "_blank">Matthias Niggli</a> and 
+<a href="https://cieb.unibas.ch/de/team/dr-christian-rutzer/" target = "_blank">Christian Rutzer</a>
 
 <img src="nfp73_img.jpg" alt="Smiley face">
 
 <br>
 
-Due to the urgency of climate change, the transformation towards a sustainable economy is becoming increasingly important. Without a doubt, such a green transition is a major structural change for an economy and especially for the labor market. From a policy perspective, it is for example important to know which occupations are likely to be affected positively and which negatively. Moreover, it is also valuable to have information about labor shortages of occupations that may be in high demand when such a transformation occurs.
+Think about a country that decides to transform towards a greener and more sustainable economy. Such a Green Transition is a major structural change which is likely to induce shifts in the demand for products and technologies. At the same time, of course, it has also an effect on labor markets. For example, skills requirements in some occupations are likely to change (e.g. knowledge of electro engines instead), the demand for green tasks increases (e.g. installations of solar panels) and rather pollution-intensive tasks might vanish completely over the long run (e.g. coal mining). An important concern is therefore whether labor markets can cope with these implied changes (see for example work from Vona et al. 2018; Bowen et al., 2016; Consoli et al. 2016 or Martinez-Fernandez et al., 2010).
 
-To this end, we develop an approach that allows us to determine the potential of an occupation to contribute to such a green transition (the so-called "green potential“ of an occupation). Using the green potential at the occupational level enables us to address various issues. 
 
-In the following, we first illustrate our approach. Afterwards, we give you, the reader, the possibility to compare the green potential of various occupations with each other. Finally, you can also investigate the green potential of labor markets of different countries. Be excited!  
-<br>
-
-##### <font color='green'> **1) The Green Potential of Occupations** </font>
-
-Figure 1 illustrates our approach to estimate the green potential of occupations. For a detailed description, we refer to a recent [Working Paper](https://ideas.repec.org/p/bsl/wpaper/2020-03.html) of us. In short, the green potential of an occupation depends on whether it can fulfill the tasks that are demanded in a green economy. This, in turn, depends on the skills that workers possess. The <a href="https://www.onetcenter.org/reports/GreenTask.html" target = "_blank">O*NET</a> database features information on “green tasks” as well as on skills for every U.S. occupation classified according to the <a href="https://www.bls.gov/soc/" target = "_blank">SOC classification</a>. 
-
-Using the skill values as input features $X_i$ and the number of green tasks as the outcome $Y_i$  allows us to train machine learning algorithms that predict the “green potential” of U.S. occupations. We have trained four standard algorithms: <a href="https://en.wikipedia.org/wiki/Ordinary_least_squares" target = "_blank">Simple OLS</a>, <a href="https://en.wikipedia.org/wiki/Lasso_(statistics)" target = "_blank">LASSO</a>, <a href="https://en.wikipedia.org/wiki/Random_forest">Random Forest</a> and <a href="https://en.wikipedia.org/wiki/Tikhonov_regularization" target = "_blank">Ridge regression</a>, among which the Ridge regression showed the best prediction performance.
-
-<br>
-<figure> 
-<figcaption> *Figure 1: Illustration of our estimation of the green potential of occupations.* </figcaption>
-  <img src="fig_ml.png" alt="my alt text"/>
-</figure>
+We have investigated questions like this in a reserach project, which is funded by the Swiss National Science Foundation (SNF/NRP-73). With this report, we provide an overview of the project’s main findings and discuss some of the possible implications for the Swiss economy. 
 
 <br>
 
-Certainly, the green transition is not a U.S. specific phenomenon and, therefore, we have also evaluated the “green potential” of <a href="https://www.ilo.org/public/english/bureau/stat/isco/" target = "_blank">ISCO occupations</a>. ISCO is a classification scheme that is used worldwide and, in particular, also in Switzerland. We have used a crosswalk between the U.S. SOC classification and the ISCO classification to transfer skill values of U.S. occupations from the O*NET database to ISCO occupations. With this, we have obtained skills values for ISCO occupations, which we then used as input variables $X_i$ in our trained Ridge regression to predict the “green potential” of ISCO occupations. 
+#### <font color='green'> **The Green Potential of Occupations** </font>
 
-The following Table 1 shows our estimated green potential of various ISCO occupations. As you can see, the Ridge regression assigns technical and engineering occupations the highest green potential values. This is because such occupations can directly make production processes or products more sustainable. And what green potential do you think has your occupation? Feel free to compare the green potential of your occupation with other occupations based on three selection criteria: 
 
-+ **ISCO**: The selection is based on ISCO-codes. 
-
-+ **Occupation**: The selection is based on occupation-titles. 
-
-+ **Estimated Green Potential**: Choose a range of green potential values and see which occupations are part of it.
-
-<br>
-
-```{r, echo=FALSE}
-# ui <- fluidPage(
-#     br(),
-#     fluidRow(column(7, div(dataTableOutput("dataTable")))))
-# # ui <- fluidPage(
-# #     h1("The green potential of your occupation"),
-# #     fluidRow(column(1, table("table1"))),
-# #     # customPlotUI("plot1"),
-# #     # customPlotUI("plot2"),
-# #     p( "Dast ist spapnnend $x^2$" )
-# # )
-# 
-# server <- function(input, output, session) {
-#     isco_list <- read.csv2("isco_list.csv")
-#     isco_list <- mutate(isco_list, ISCO = as.character(ISCO), green = as.numeric(as.character(green)))
-#     colnames(isco_list) <- c("ISCO", "Occupation", "Estimated Green Potential")
-#     output$dataTable <- renderDT(
-#         datatable(isco_list,  
-#                   class = "display nowrap compact", # style
-#                   filter = "top", # location of column filters
-#                   rownames= FALSE,
-#                   # fillContainer = FALSE,
-#                   options = list(pageLength = 20, sDom  = '<"top">lrt<"bottom">ip', dom = 'fltp', columnDefs=list(list(targets=0:2, className="dt-left")))) %>% formatStyle(columns = c("Estimated Green Potential", "Estimated Green Potential"), backgroundColor = styleInterval(seq(0,1,0.05), colorRampPalette(c(rgb(0,0,0.1,0.1),rgb(0,1,0,0.7)), alpha=TRUE)(22))), # data
-# 
-#         # formatStyle(columns = "Estimated Green Potential", target = "cell", backgroundColor = "#F7080880")
-#     )
-# }
-# shinyApp(ui = ui, server = server, options = list(dom = 'ft', height = '800', width = "100%"))
-```
-
-*Table 1: The green potential of occupations.*
 ```{r, echo = F}
-    isco_list <- read.csv2("isco_list.csv")
-    isco_list <- mutate(isco_list, ISCO = as.character(ISCO), green = as.numeric(as.character(green)))
-    colnames(isco_list) <- c("ISCO", "Occupation", "Estimated Green Potential")
-   renderDT(
-        datatable(isco_list, 
+# get the data:
+isco_list <- read.csv2("isco_list.csv")
+isco_list <- mutate(isco_list, ISCO = as.character(ISCO), green = as.numeric(as.character(green)))
+colnames(isco_list) <- c("ISCO", "Occupation", "Estimated Green Potential")
+
+# make the table
+renderDT(
+        datatable(isco_list,
                   class = "display nowrap compact", # style
                   filter = "top", # location of column filters
                   rownames= FALSE,
-                  # fillContainer = FALSE,
-                  options = list(pageLength = 20, dom = 'tp', columnDefs=list(list(targets=0:2, className="dt-left")))) %>% formatStyle(columns = c("Estimated Green Potential", "Estimated Green Potential"), backgroundColor = styleInterval(seq(0,1,0.05), colorRampPalette(c(rgb(0,0,0.1,0.1),rgb(0,1,0,0.7)), alpha=TRUE)(22))), # data
-
-        # formatStyle(columns = "Estimated Green Potential", target = "cell", backgroundColor = "#F7080880")
-    )
+                  options = list(pageLength = 20, dom = 'tp', 
+                                 columnDefs=list(list(targets=0:2, className="dt-left")))) %>% 
+                formatStyle(columns = c("Estimated Green Potential", "Estimated Green Potential"), 
+                            backgroundColor = styleInterval(seq(0,1,0.05),
+                                                            colorRampPalette(c(rgb(0,0,0.1,0.1),
+                                                                               rgb(0,1,0,0.7)), alpha=TRUE)(22)))
+        )
 ```
-*Source: Own estimations based on O\*NET data.*
-
-<br>
-
-##### <font color='green'> **2) The Green Potential of European Countries** </font>
-
-In the previous section, we illustrated our idea to estimate the green potential at the level of occupations. By using the green potential at the occupation level, one can calculate the share of a country's workforce having a green potential above a specific value. For European countries, this is plotted in the map below of Figure 2. The greener a country on the map, the higher is it’s share of workers who are employed in occupations with high green potential. 
-
-In general, in countries like Germany, France, Switzerland or the Scandinavian countries, a relatively high share of persons are employed in occupations above the cut-off. Thus, at least in comparison to other Eurpean countries, these countries seems to be well prepared for a green transition. Now it's your turn. By varying the cut-off, you can observe how the share of each country's workforce changes! 
+<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data.  All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
 
 ```{r, echo = F}
-# setwd("C:/Arbeit/Forschungsstelle/R Ideen/Markdown_shiny/")
+# prepare the data for the map ----------------------------------------------
 plot.data <- readRDS("green_pot_country.RDS")
 plot.data <- data.frame(plot.data) 
-
 mydata <- reactive({
   plot.data_sub <- dplyr::filter(plot.data, dplyr::near(cut_off, input$cut))
   head(plot.data_sub)
@@ -141,45 +92,52 @@ mydata <- reactive({
 ```
 
 <br>
-*Figure 2: The green potential of European countries.* 
+
 ```{r, echo = F}
+# make a slider input for the treshold ----------------------------------------------
+sliderInput("cut",
+            width = '100%',
+            label="Choose a green potential threshold",
+            min=0.40000,
+            max=0.80000,
+            value=0.5000000,
+            step=0.0500000)
 
-cdata <- session$clientData
-
-wellPanel(inputPanel(
-	sliderInput("cut", width = '100%',
-                            label="Cut-off for green potential",
-                            min=0.40000,
-                            max=0.80000,
-                            value=0.5000000,
-                           step=0.0100000)
-	)
-)
-
-wellPanel(
+# make the reactive plot ----------------------------------------------
 renderPlotly({
-	  dat <- mydata()
-	  dat <- mutate(dat, share_green = round(share_green, 4), Country = paste0(region, ' ', round(share_green*100, 0), ' %'))
-    cut_value <- input$cut
-    col.range=c(unique(min(plot.data$share_green, na.rm = T)), unique(max(plot.data$share_green, na.rm = T)))
-    col.range= c(0, 0.5)
-
-ggplotly(
-          ggplot2::ggplot()+
-	geom_polygon(data = dat, aes(x = long, y = lat, group = group, fill = share_green, label = Country), color="black",size=0.1)  +
-scale_fill_viridis(option = "viridis", begin = 0.3, end = 0.8, name= paste0("Share of workforce\nhaving a green potential above ", cut_value)) +
-	theme(legend.position = 'top',
-		panel.grid.minor =  element_blank(),
- panel.background = element_blank(),
- axis.title = element_blank(),
- axis.text = element_blank(),
- axis.ticks = element_blank()
-), 
-tooltip = c("label"), dynamicTicks = T)  %>% config(displayModeBar = T) %>% layout(xaxis=list(fixedrange=TRUE)) %>% layout(yaxis=list(fixedrange=TRUE))
-})
-)
+        
+        # get the data according to the cut-off:
+        dat <- mydata()
+	dat <- mutate(dat, 
+	              share_green = round(share_green, 4), 
+	              Country = paste0(region, ' ', round(share_green*100, 0), ' %'))
+	
+	cut_value <- input$cut
+	col.range <- c(unique(min(plot.data$share_green, na.rm = T)), 
+	               unique(max(plot.data$share_green, na.rm = T)))
+	col.range= c(0, 0.5)
+	
+	ggplotly(
+	        ggplot2::ggplot()+
+	                geom_polygon(data = dat, 
+	                             aes(x = long, y = lat, group = group, fill = share_green, label = Country),
+	                             color="black",size=0.1)  +
+	                scale_fill_viridis(option = "viridis", begin = 0.3, end = 0.8, 
+	                                   name= paste0("Share of workforce\nhaving a green potential above ", cut_value)) +
+	                theme(legend.position = 'top',
+	                      panel.grid.minor =  element_blank(),
+	                      panel.background = element_blank(),
+	                      axis.title = element_blank(),
+	                      axis.text = element_blank(),
+	                      axis.ticks = element_blank()
+	                      ),
+	        tooltip = c("label"), dynamicTicks = T) %>% 
+	        config(displayModeBar = T) %>% 
+	        layout(xaxis=list(fixedrange=TRUE)) %>% 
+	        layout(yaxis=list(fixedrange=TRUE))
+	})
 ```
-*Source: Own calcualations based on the <a href="https://ec.europa.eu/eurostat/web/microdata/european-union-labour-force-survey" target = "_blank">European Union Labour Force Survey</a> and our green potential estimates of occupations.*
+<span style="font-size:0.8em">*Source: Own calcualations based on the <a href="https://ec.europa.eu/eurostat/web/microdata/european-union-labour-force-survey" target = "_blank">European Union Labour Force Survey</a> and our green potential estimates of occupations.*</span>
 
 
 <br>
@@ -187,19 +145,27 @@ tooltip = c("label"), dynamicTicks = T)  %>% config(displayModeBar = T) %>% layo
 renderText({
     dat <- mydata()
     paste0("   ",
-    "When setting the cut-off to ", input$cut, ", ", round(unique(dat[dat$iso == "CHE", "share_green"])*100, 0), "% of Switzerland's workforce has a green potential above this value. In comparison, the country with the largest share is ",  unique(dat[which(max(dat$share_green)==dat$share_green), "region"])," with ", round(unique(dat[which(max(dat$share_green)==dat$share_green), "share_green"])*100, 0), "% of it's workforce above that cut-off. The country with the lowest share is ", unique(dat[which(min(dat$share_green)==dat$share_green), "region"]), ifelse(round(unique(dat[which(min(dat$share_green)==dat$share_green), "share_green"])*100,0)==0, paste0(" with nearly zero percent."), paste0(" with a share of ", round(unique(dat[which(min(dat$share_green)==dat$share_green), "share_green"])*100, 0), "%.")))
+    "When setting the cut-off to ", input$cut, ", ", round(unique(dat[dat$iso == "CHE", "share_green"])*100, 0),
+    "% of Switzerland's workforce has a green potential above this value. In comparison, the country with the largest share is ", unique(dat[which(max(dat$share_green)==dat$share_green), "region"])," with ", round(unique(dat[which(max(dat$share_green)==dat$share_green), "share_green"])*100, 0), "% of it's workforce above that cut-off. The country with the lowest share is ", unique(dat[which(min(dat$share_green)==dat$share_green), "region"]), ifelse(round(unique(dat[which(min(dat$share_green)==dat$share_green), "share_green"])*100,0)==0, paste0(" with nearly zero percent."), paste0(" with a share of ", round(unique(dat[which(min(dat$share_green)==dat$share_green), "share_green"])*100, 0), "%.")))
 })
-
-cdata <- session$clientData
 ```
 
-
-<br>
 <br>
 
-##### <font color='green'> **3) Labor shortages and skill imbalances in Switzerland ** </font>
-PROBLEM: SHORTAGE INDICATOR NOT AVAILABLE FOR A LOT OF OCCUPTIONS -> MICHAEL FRAGEN
-*Table XX: Skills shortage of occupations.*
+#### <font color='green'> **The Green Transition in Switzerland** </font>
+
+
+<font color='red'> PROBLEM: SHORTAGE INDICATOR NOT AVAILABLE FOR A LOT OF OCCUPTIONS -> MICHAEL FRAGEN</font>
+
+MN: Habe gemerkt, dass ich dasselbe Problem habe. Ich habe bei Michael angefragt als ich mit dem Sammelband begann und habe von ihm dieses .csv hier bekommen: *./Dropbox/NFP 73/Output/paper green potential in europe/Daten/indicators-4digit.xlsx*
+Mir gibt es da 277 ISCOs an. Für green.potential habe ich diese Liste verwendet: *./Dropbox/NFP 73 (WWZ intern)/Daten/ISCO/isco_list.csv*. Hier komme ich auf 323 iscos 
+
+=> 46 Missings bei Michaels Daten.
+
+=> unbedingt darauf achten, dass wir uns hier auf die gleichen Daten beziehen!!!
+
+<br>
+
 ```{r, echo = F}
 sec3_dat <- readRDS("data_section3.rds")
 renderDT(
@@ -208,125 +174,143 @@ renderDT(
                   filter = "top", # location of column filters
                   rownames= FALSE,
                   # fillContainer = FALSE,
-                  options = list(pageLength = 20, dom = 'tp', columnDefs=list(list(targets=0:3, className="dt-left")))) %>% formatStyle(columns = c("Estimated Green Potential", "Estimated Green Potential"), backgroundColor = styleInterval(seq(0,1,0.05), colorRampPalette(c(rgb(0,0,0.1,0.1),rgb(0,1,0,0.7)), alpha=TRUE)(22))))
+                  options = list(pageLength = 20, dom = 'tp', 
+                                 columnDefs=list(list(targets=0:3, className="dt-left")))) %>% 
+                formatStyle(columns = c("Estimated Green Potential", "Estimated Green Potential"), 
+                            backgroundColor = styleInterval(seq(0,1,0.05),
+                                                            colorRampPalette(c(rgb(0,0,0.1,0.1),
+                                                                               rgb(0,1,0,0.7)), 
+                                                                             alpha=TRUE)(22))
+                            )
+        )
 ```
-*Source: Own estimations based on O\*NET data.*
+<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data.  All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
 
-
-##### <font color='green'> **4) Green Potential and labor shortage in Swiss industries** </font>
+<br>
 
 ```{r, echo = F}
-#### load the data and define input params: -------------------------------------------------------------------------
+#### load the data and define input parameters for plotting -------------------------------------------------
 sec4_dat <- readRDS("data_section4.rds")
 REGIONEN <- as.character(unique(sec4_dat$Region))
 NOGAS <- unique(sec4_dat$NOGA2digit)
 NOGAS_NAMES <- unique(sec4_dat$NOGAS_NAMES)
-```
-
-```{r, echo = FALSE, warning = FALSE}
 plot1_data <- subset(sec4_dat, 
                      NOGA2digit %in% NOGAS & 
-                             NOGA2digit != 24 & 
-                             THRES == 0.4 & 
+                             NOGA2digit != 24 & # discard outlier
+                             THRES == 0.4 & # set a random threshold. plot does not depend on it
                              Region == "Schweiz")
-wellPanel(
-        renderPlotly({
-                ggplotly(
-                        ggplot(data = plot1_data, aes(x = Handelbarkeit, y= log(GHG_per_ValueAdded)))+
-                        geom_point(size = 4, alpha = 0.7)+
-                        geom_text(aes(label=NOGA2digit), size=3, check_overlap = FALSE, nudge_x = +0.07, nudge_y = +0.02)+
-                        xlab("Handelbarkeit")+
-                        ylab("Treibhausgasemissionen pro Wertschöpfung")+
-                        geom_smooth(method = "lm", se=FALSE)+
-                        scale_color_viridis(option="inferno", begin = 0.3, end = 0.8, discrete = FALSE, name = "None")+
-                        guides(color = FALSE)+
-                        theme(axis.title = element_text(face="bold",size=10),
-                              panel.background = element_blank(),
-                              axis.line = element_line()
-                              ),
-                        
-                        tooltip = c("label"), dynamicTicks = T) %>%
-                        config(displayModeBar = T) %>% 
-                        layout(xaxis=list(fixedrange=TRUE)) %>% 
-                        layout(yaxis=list(fixedrange=TRUE))
-                })
+
+# make the plot: 
+renderPlotly({
+        ggplotly(
+                ggplot(data = plot1_data, aes(x = Handelbarkeit, y= log(GHG_per_ValueAdded),
+                                              color = log(GHG_per_ValueAdded)))+
+                geom_point(size = 4, alpha = 0.7)+
+                geom_text(aes(label = NOGA2digit), size = 3, check_overlap = FALSE, nudge_x = +0.08, nudge_y = +0.05)+
+                xlab("Tradeability")+
+                ylab("Greenhouse gas emissions per value added")+
+                scale_color_viridis(option="viridis", begin = 0.7, end = 0.5, discrete = FALSE, name = "None")+
+                guides(color = FALSE)+
+                theme(axis.title = element_text(face="bold",size=10),
+                      panel.background = element_blank(),
+                      axis.line = element_line()
+                      ),
+                tooltip = c("label"), dynamicTicks = T) %>%
+                config(displayModeBar = T) %>% 
+                layout(xaxis=list(fixedrange=TRUE)) %>% 
+                layout(yaxis=list(fixedrange=TRUE))
+        })
+```
+<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data. All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
+
+<br>
+
+```{r, echo = F}
+# define the input panels: -------------------------------------------------------------------------
+fluidRow(
+        column(4,
+pickerInput(
+  inputId = "REGIONEN", 
+  label = "Choose a region", 
+  choices = REGIONEN, 
+  selected = "Schweiz",
+  options = list(
+    `actions-box` = TRUE, 
+    `selected-text-format` = "count > 3",
+    `count-selected-text` = "Alle",
+    `deselect-all-text` = "Discard all",
+    `select-all-text` = "Seclect all",
+    `none-selected-text` = 'No regions selected'), 
+  multiple = FALSE)
+),
+column(4,
+pickerInput(
+  inputId = "NOGAS_NAMES", 
+  label = "Choose industries", 
+  choices = NOGAS_NAMES, 
+  selected = NOGAS_NAMES,
+  options = list(
+    `actions-box` = TRUE, 
+    size = 10,
+    `selected-text-format` = "count > 3",
+    `count-selected-text` = "All",
+    `deselect-all-text` = "Discard all",
+    `select-all-text` = "Select all",
+    `none-selected-text` = 'No industries selected'), 
+  multiple = TRUE)
 )
+)
+
+# make a slider input for the treshold ----------------------------------------------
+sliderInput("cutOff",
+            width = '100%',
+            label="Choose a green potential threshold",
+            min=0.40000,
+            max=0.80000,
+            value=0.5000000,
+            step=0.0500000)
 ```
 
 ```{r, echo = F}
-# define the input panel: -------------------------------------------------------------------------
-wellPanel(inputPanel(
-        # select green potential cut-off
-	sliderInput("cutOff", width = '100%',
-                            label="Cut-off for green potential",
-                            min=0.40000,
-                            max=0.80000,
-                            value=0.5000000,
-                           step=0.0100000)
-	),
-	# select Regions
-	checkboxGroupInput(inputId = "REGIONEN",
-	                   label = "Regions",
-	                   inline = TRUE, # make list of boxes horizontally
-	                   choices =  REGIONEN,
-	                   selected = "Schweiz"),
-        # select NOGAS:
-        checkboxGroupInput(inputId = "NOGAS",
-                           label = "Industries",
-                           inline = TRUE, # make list horizontally
-                           choiceValues = NOGAS,
-                           choiceNames = NOGAS_NAMES,
-                           selected = NOGAS)
-)
-
 # define the output panel : -------------------------------------------------------------------------
-wellPanel(
-        renderPlotly({
+renderPlotly({
                 
-                # subset the data accoding to the input: 
-                plot2_data <- subset(sec4_dat,
-                       round(THRES, 2) == input$cutOff & # selected cutOff (use round() to make sure numbers match)
-                       Region %in% input$REGIONEN & # selected Region(s)
-                       NOGA2digit %in% input$NOGAS # selected NOGAS
-                       )
+        # subset the data accoding to the input:
+        
+        NOGAS <- sec4_dat[sec4_dat$NOGAS_NAMES %in% input$NOGAS_NAMES, "NOGA2digit"] # get selected NOGA codes
+        
+        plot2_data <- subset(sec4_dat,
+               round(THRES, 2) == input$cutOff & # selected cutOff (use round() to make sure numbers match)
+               Region %in% input$REGIONEN & # selected Region(s)
+               NOGA2digit %in% NOGAS # selected NOGA codes 
+               )
 
-                # make the plot
-                ggplotly(
-                        ggplot(data = plot2_data, aes(x = green_emp_share, y= WeightedShortageGreen ))+
-                        geom_point(aes(color=Region), size = 4, alpha = 0.7)+
-                        geom_text(aes(label=NOGA2digit), size=3, check_overlap = FALSE, nudge_x = +0.01, nudge_y = +0.02)+
-                        geom_hline(yintercept = 0, linetype = "dotted")+
-                        xlab(paste("Beschaeftigungsanteil von Arbeitskraeften mit gruenem Potential \n (Region: ",
-                                   paste0(input$REGIONEN, collapse = " & "),", Cut-off: ",input$cutOff,")", sep=""))+
-                        ylab(paste("Knappheit an Arbeitskraeften mit gruenem Potential \n (Region: ", 
-                                   paste0(input$REGIONEN, collapse = " & "),", Cut-off: ", input$cutOff,")",sep = ""))+
-                        geom_smooth(method = "lm", se=FALSE)+
-                        ylim(-0.5,3.5)+
-                        xlim(0,0.45)+
-                        scale_color_viridis(option="viridis",
-                                            begin = 0.3, end = 0.8,
-                                            discrete = TRUE,
-                                            name = "Region")+
-                        theme(axis.title = element_text(face="bold",size=10),
-                              panel.background = element_blank(),
-                              axis.line = element_line()
-                              ),
-                        
-                        tooltip = c("label"), dynamicTicks = T) %>%
-                        config(displayModeBar = T) %>% 
-                        layout(xaxis=list(fixedrange=TRUE)) %>% 
-                        layout(yaxis=list(fixedrange=TRUE))
-                })
-)
-
-
-# use selectizGroupUI() instead of checkbox:
-# https://www.davidsolito.com/post/conditional-drop-down-in-shiny/ (Example 8)
-# https://shiny.rstudio.com/articles/selectize.html
-# https://www.rdocumentation.org/packages/shinyWidgets/versions/0.5.0/topics/selectizeGroup-module
-
-
+        # make the plot
+        ggplotly(
+                ggplot(data = plot2_data, aes(x = green_emp_share, y= WeightedShortageGreen ))+
+                geom_point(color = "blue4", size = 4, alpha = 0.7)+
+                geom_text(aes(label = NOGA2digit), size = 3, check_overlap = FALSE, nudge_x = +0.01, nudge_y = +0.02)+
+                xlab(paste("Employment share of jobs with  green potential \n (Region: ",
+                           paste0(input$REGIONEN, collapse = " & "),
+                           ", green potential of at least ",input$cutOff,")", sep=""))+
+                ylab(paste("Shortage of jobs with green potential \n (Region: ", 
+                           paste0(input$REGIONEN, collapse = " & "),
+                           ", green potential of at least ", input$cutOff,")",sep = ""))+
+                ylim(-0.5, 7)+
+                xlim(0, 0.5)+
+                guides(color = FALSE)+
+                theme(axis.title = element_text(face="bold",size = 10),
+                      panel.background = element_blank(),
+                      axis.line = element_line()
+                      ),
+                
+                tooltip = c("label"), dynamicTicks = T) %>%
+                config(displayModeBar = T) %>% 
+                layout(xaxis = list(fixedrange=TRUE)) %>% 
+                layout(yaxis = list(fixedrange=TRUE))
+        })
 ```
+<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data.  All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
 
 
 
