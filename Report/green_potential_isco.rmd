@@ -33,6 +33,7 @@ library(autoimage)
 #### <font color='green'>**Transition to a "Green Open Economy": Labour Market Effects and Implications for the Swiss Economy** </font>
 
 *February 2020. By [Matthias Niggli](https://wwz.unibas.ch/de/personen/matthias-niggli/) and [Christian Rutzer](https://wwz.unibas.ch/de/personen/christian-rutzer/)*
+TEST
 
 <img src="nfp73_img.jpg" alt="Smiley face">
 
