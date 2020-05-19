@@ -65,13 +65,14 @@ renderDT(
                   rownames= FALSE,
                   options = list(pageLength = 20, dom = 'tp', 
                                  columnDefs=list(list(targets=0:2, className="dt-left")))) %>% 
-                formatStyle(columns = c("Estimated Green Potential", "Estimated Green Potential"), 
-                            backgroundColor = styleInterval(seq(0,1,0.05),
-                                                            colorRampPalette(c(rgb(0,0,0.1,0.1),
-                                                                               rgb(0,1,0,0.7)), alpha=TRUE)(22)))
+                formatStyle(columns = c("Estimated Green Potential"), target = "row",
+                            backgroundColor = styleInterval(seq(0, 1, 0.05),
+                                                            colorRampPalette(c(rgb(0, 0, 0.1, 0.1),
+                                                                               rgb(0, 0.9 , 0, 0.5)), 
+                                                                             alpha = TRUE)(22)))
         )
 ```
-<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data.  All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
+<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data. The data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
 
 ```{r, echo = F}
 # prepare the data for the map ----------------------------------------------
@@ -169,15 +170,15 @@ renderDT(
                   # fillContainer = FALSE,
                   options = list(pageLength = 20, dom = 'tp', 
                                  columnDefs=list(list(targets=0:3, className="dt-left")))) %>% 
-                formatStyle(columns = c("Estimated Green Potential", "Estimated Green Potential"), 
-                            backgroundColor = styleInterval(seq(0,1,0.05),
-                                                            colorRampPalette(c(rgb(0,0,0.1,0.1),
-                                                                               rgb(0,1,0,0.7)), 
-                                                                             alpha=TRUE)(22))
+                formatStyle(columns = c("Estimated Green Potential"), target = "row",
+                            backgroundColor = styleInterval(seq(0, 1, 0.05),
+                                                            colorRampPalette(c(rgb(0, 0, 0.1, 0.1),
+                                                                               rgb(0, 0.9 , 0, 0.5)), 
+                                                                             alpha = TRUE)(22))
                             )
         )
 ```
-<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data.  All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
+<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on data from <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> and <a href="https://bss-basel.ch/de/einblicke/fachkraefteindex" target ="blank">BSS</a>.*</span>
 
 <br>
 
@@ -214,7 +215,7 @@ renderPlotly({
                 layout(yaxis=list(fixedrange=TRUE))
         })
 ```
-<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data. All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
+<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on data from <a href="https://ec.europa.eu/eurostat/cache/metadata/de/env_ac_ainah_r2_esms.htm" target ="blank">Eurostat</a>, <a href="http://www.oecd.org/sti/ind/stanstructuralanalysisdatabase.htm" target ="blank">OECD</a> and <a href="https://www.ezv.admin.ch/ezv/en/home/topics/swiss-foreign-trade-statistics/daten.html" target ="blank">Swiss Federal Customs Administration</a>.*</span>
 
 <br>
 
@@ -303,7 +304,27 @@ renderPlotly({
                 layout(yaxis = list(fixedrange=TRUE))
         })
 ```
-<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data.  All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
+<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on data from <a href="https://www.bfs.admin.ch/bfs/en/home/statistics/work-income/surveys/slfs.html" target ="blank">Federal Statistical Office</a> and <a href="https://bss-basel.ch/de/einblicke/fachkraefteindex" target ="blank">BSS</a>.*</span>
 
+<br>
+<br>
 
+<hr>
+
+#### **Methodology**
+For a detailed description, we refer to a recent [Working Paper](https://ideas.repec.org/p/bsl/wpaper/2020-03.html) of us. In short, the green potential of an occupation depends on whether it can fulfill the tasks that are demanded in a green economy. This, in turn, depends on the skills that workers possess. The <a href="https://www.onetcenter.org/reports/GreenTask.html" target = "_blank">O*NET</a> database features information on “green tasks” as well as on skills for every U.S. occupation classified according to the <a href="https://www.bls.gov/soc/" target = "_blank">SOC classification</a>. 
+Using the skill values as input features $X_i$ and the number of green tasks as the outcome $Y_i$  allows us to train machine learning algorithms that predict the “green potential” of U.S. occupations. We have trained four standard algorithms: <a href="https://en.wikipedia.org/wiki/Ordinary_least_squares" target = "_blank">Simple OLS</a>, <a href="https://en.wikipedia.org/wiki/Lasso_(statistics)" target = "_blank">LASSO</a>, <a href="https://en.wikipedia.org/wiki/Random_forest">Random Forest</a> and <a href="https://en.wikipedia.org/wiki/Tikhonov_regularization" target = "_blank">Ridge regression</a>, among which the Ridge regression showed the best prediction performance.
+
+<br>
+
+<figure> 
+<figcaption> *How to estimate the green potential of occupations* </figcaption>
+  <img src="fig_ml.png" alt="my alt text"/>
+</figure>
+
+<br>
+
+Certainly, the green transition is not a U.S. specific phenomenon and, therefore, we have also evaluated the “green potential” of <a href="https://www.ilo.org/public/english/bureau/stat/isco/" target = "_blank">ISCO occupations</a>. ISCO is a classification scheme that is used worldwide and, in particular, also in Switzerland. We have used a crosswalk between the U.S. SOC classification and the ISCO classification to transfer skill values of U.S. occupations from the O*NET database to ISCO occupations. With this, we have obtained skills values for ISCO occupations, which we then used as input variables $X_i$ in our trained Ridge regression to predict the “green potential” of ISCO occupations.
+
+<hr>
 
