@@ -82,7 +82,7 @@ renderDT(
 
 ```{r, echo = F}
 # prepare the data for the map ----------------------------------------------
-plot.data <- readRDS("green_pot_country.RDS")
+plot.data <- readRDS("data_section2.rds")
 plot.data <- data.frame(plot.data) 
 mydata <- reactive({
   plot.data_sub <- dplyr::filter(plot.data, dplyr::near(cut_off, input$cut))
