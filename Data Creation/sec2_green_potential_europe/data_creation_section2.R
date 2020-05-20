@@ -1,4 +1,4 @@
-## Datengenerierung für Web-App "green potential" / CR 10.2.2020
+## Datengenerierung für Web-App "green potential" / CR fully functional 20.5.2020
 
 
 ############# load packages ############# 
@@ -24,9 +24,9 @@ library("rworldmap")
 library("maps")
 
 ############# set path #############
-mainDir1 <- "C:/Users/nigmat01/Dropbox/NFP 73 (WWZ intern)"
-mainDir2 <- "C:/Users/Matthias/Dropbox/NFP 73 (WWZ intern)"
-mainDir3 <- "C:/Users/christian rutzer/Dropbox/NFP 73 (WWZ intern)"
+mainDir1 <- "C:/Users/nigmat01/Dropbox"
+mainDir2 <- "C:/Users/Matthias/Dropbox"
+mainDir3 <- "C:/Users/christian rutzer/Dropbox"
 if (file.exists(mainDir1)==T){
         path <- mainDir1}else{
                 if (file.exists(mainDir2)){
@@ -34,8 +34,10 @@ if (file.exists(mainDir1)==T){
                                 path <- mainDir3}
         }
 
+## Load data of green potential estimates
+lasso.pred.table <- read.csv2(paste0(path, "/NFP 73/Output/paper green potential in europe/Daten/lasso_three_isco.csv"))
 
-lasso.pred.table <- read.csv2("C:/Users/christian rutzer/Dropbox/NFP 73/Output/paper green potential in europe/Daten/lasso_three_isco.csv")
+## Following data has to be on wwz-shared driver due to privacy and security contract with the BFS 
 dat.2011 <- readRDS("X:/_shared/Projekt - Green Open Economy/dat.2011.ml.RDS")
 dat.2011$num.new <- 1
 setDT(dat.2011)[, ges := sum(num.new), list(isco, iso, year, emp)]
@@ -43,12 +45,17 @@ dat.2011 <- mutate(dat.2011, y.2012 = case_when(emp == 1 & year == 2012 & ges >=
 setDT(dat.2011)[, test.20 := y.2012[year == 2012]*y.2016, list(isco, iso)]
 setDT(dat.2011)[, test.2012.2016 := sum(test.20), list(isco, iso)]
 dat.2011 <- filter(dat.2011, test.2012.2016 >= 1) %>% dplyr::select(-ges, -y.2012, -y.2016,-test.20,-test.2012.2016)
+
+##########################################################################################################
+## Add informtion on employment at the sector level. Not implemented so far in the web output / 20.5.2020
 # dat.2011 <- subset(dat.2011,	!(iso == "DE" & year == 2011))
 # dat.2011 <- mutate(dat.2011, migr = case_when(iso != "CH" & as.numeric(migr) > 0 & as.numeric(migr) < 11 | iso == "CH" & as.numeric(migr) > 0 & as.numeric(migr) < 3652.5 ~ "yes", TRUE ~ "no"))
 # dat.2011 <- mutate(dat.2011, sector = case_when(sector %in% c("A", "B") ~ "Resources Sector",
 # 																								sector %in% c("C") ~ "Manufacturing Sector",
 # 																								sector %in% c("D", "E", "F", "DE") ~ "Energy & Construction",
 # 																								T ~ "Services Sector")) 
+##########################################################################################################
+
 dat.2011 <- filter(dat.2011, !(isco %in% c("-5", "00", "010", "011", "021", "031")))
 dat.2011 <- mutate(dat.2011, isco = as.character(isco))
 lasso.pred.table <- mutate(lasso.pred.table, three = as.character(three), lasso.ohne.weight = as.numeric(as.character(lasso.ohne.weight)), lasso.econ.weight = as.numeric(as.character(lasso.econ.weight)))
@@ -65,23 +72,30 @@ dat_agg_tot <- mutate(dat_agg_tot, share_green = green / (green + non.green), cu
 return(dat_agg_tot)
 }
 
-# setDT(dat_agg_tot)[, share := num[green == "green"] / (num[green == "green"] + num[green != "green"]), .(iso, year, sector)]
-	
-dat_fin <- do.call(rbind, lapply(seq(0.1, 0.9, 0.01), function(x) share_green(x)))
+dat_fin <- do.call(rbind, lapply(seq(0.4, 0.8, .05), function(x) share_green(x)))
 dat_fin <- mutate(dat_fin, iso = countrycode(iso, "iso2c", "iso3c"))
 dat_fin$iso[is.na(dat_fin$iso) == T] <- "GBR" 
 
-### Plot EU map greenness for conference in lucern / 21.1.2020
+## Add countries shown in the map but having not green potential value 
+c_added <- as.data.frame(cbind(do.call(rbind, replicate(length(unique(dat_fin$cut_off)), as.matrix(data.frame(iso = countrycode(c("EE","PL","BY","LV","LU","UA","RS","BA","HR","AL","BG","RO","SI","ME","MD","MK","LT"), "iso2c", "iso3c"), share_green = NA)), simplify = FALSE)),
+cut_off = rep(seq(0.4, 0.8, .05), length(unique(dat_fin$cut_off))))) %>% mutate(cut_off = as.numeric(as.character(cut_off)), share_green = as.numeric(as.character(share_green)))
+
+dat_fin <- rbind.fill(dat_fin, c_added)
+
+### Create data for EU map of green potential 
 world_map <- map_data("world")
 world_map <- mutate(world_map, iso = countrycode(region, "country.name.en", "iso3c"))
 world_map[world_map$region=="Kosovo","iso"]<-"KOS"
 world_map <- filter(world_map, !(region %in% c("Antarctica", "Greenland",
-																							 "French Southern and Antarctic Lands")) &
-											!subregion %in% c("Ile d'Oleron","Svalbard","Jan Mayen"))
+                                               "French Southern and Antarctic Lands")) &
+                            !subregion %in% c("Ile d'Oleron","Svalbard","Jan Mayen"))
+countries<-as.character(unique(dat_fin$iso))
+countries<-c(countries,"KOS")
+eu_map <- filter(world_map, iso %in% countries)
 
-eu_map <- filter(world_map, iso %in% dat_fin$iso)
+## Add map and green potential together
 plot.data <- left_join(eu_map, dat_fin, by = "iso", all.y = T)
-plot.data <- filter(plot.data, is.na(iso) != T)
-saveRDS(plot.data, "C:/Arbeit/Forschungsstelle/R Ideen/Markdown_shiny/green_pot_country.RDS")
+plot.data <- filter(plot.data, is.na(iso) != T) 
+saveRDS(plot.data, paste0(getwd(), "/Report/data_section2.rds"))
 
 

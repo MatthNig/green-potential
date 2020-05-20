@@ -30,7 +30,14 @@ library(shinyWidgets)
 [![Foo](snf_logo.png){ width=25% }](http://www.snf.ch/)&nbsp;&nbsp;
 [![Foo](bss_logo.jpg){ width=12% }](http://www.bss-basel.ch/)&nbsp;&nbsp;
 
+<<<<<<< HEAD
+#### <font color='green'>**Transition to a "Green Open Economy": Labour Market Effects and Implications for the Swiss Economy** </font>
+
+*February 2020. By [Matthias Niggli](https://wwz.unibas.ch/de/personen/matthias-niggli/) and [Christian Rutzer](https://wwz.unibas.ch/de/personen/christian-rutzer/)*
+TEST
+=======
 ## <font color="green"> **Greening and the Labor Market** </font>
+>>>>>>> c61f93692fe189a7dbb68b4049a6c5e5d53f9cf3
 
 *Mai 2020*
 
@@ -76,7 +83,7 @@ renderDT(
 
 ```{r, echo = F}
 # prepare the data for the map ----------------------------------------------
-plot.data <- readRDS("green_pot_country.RDS")
+plot.data <- readRDS("data_section2.rds")
 plot.data <- data.frame(plot.data) 
 mydata <- reactive({
   plot.data_sub <- dplyr::filter(plot.data, dplyr::near(cut_off, input$cut))
