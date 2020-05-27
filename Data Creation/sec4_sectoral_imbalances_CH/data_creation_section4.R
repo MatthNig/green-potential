@@ -166,6 +166,7 @@ THRES <- seq(0.4, 0.8, by = 0.01)
 ############# create dataset: ############# 
 # get helper functions:
 source(paste(getwd(), "/Data/sec4_sectoral_imbalances_CH/functions_section4.R", sep=""))
+source(paste(getwd(), "/Data Creation/sec4_sectoral_imbalances_CH/functions_section4.R", sep=""))
 
 # Note: for every possible green potential cut-off, the code below calculates the folowwing:
 #       (see the code for the helper functions "weighting_fun" and "plot_data_fun" for further infos)
