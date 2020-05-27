@@ -139,7 +139,7 @@ ValueAdded <- NULL
 Greenness_Shortage_ISCO_NOGA <- read.csv(paste(path, "/Daten/erstellte daten/Greenness_Shortage_NOGA_Region.csv", sep= ""),
                                          encoding = "UTF-8", sep=";", 
                                          header=T, row.names = 1)
-NOGAS_NAMES <- read.csv2(paste(getwd(),"/Data/sec4_sectoral_imbalances_CH/NOGAsectorsTitle.csv",sep = ""),
+NOGAS_NAMES <- read.csv2(paste(getwd(),"/Data Creation/sec4_sectoral_imbalances_CH/NOGAsectorsTitle.csv",sep = ""),
                          stringsAsFactors = FALSE, colClasses = "character")[, 1:2]
 
 ############# define subsetting parameters: ############# 
@@ -165,7 +165,6 @@ THRES <- seq(0.4, 0.8, by = 0.01)
 
 ############# create dataset: ############# 
 # get helper functions:
-source(paste(getwd(), "/Data/sec4_sectoral_imbalances_CH/functions_section4.R", sep=""))
 source(paste(getwd(), "/Data Creation/sec4_sectoral_imbalances_CH/functions_section4.R", sep=""))
 
 # Note: for every possible green potential cut-off, the code below calculates the folowwing:
