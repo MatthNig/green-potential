@@ -2,24 +2,24 @@
 # Purpose: Defines necessary functions      #      
 #          to run the graph in section 4    #
 #          of the shiny application         #
-# Date:    11.05.2020                       #
+# Date:    28.05.2020                       #
 # Authors: Matthias Niggli, CIEB/Uni Basel  #
 #          Christian Rutzer, CIEB/Uni Basel #
 #############################################
 
 weighting_fun <- function(thres){
         
-        # discard NOGAs that do not have at least 50 observations in the SAKE 2019 data
+        # discard NOGAs that do not have at least 30 observations in the SAKE 2019 data
         NOGA_discard <- Greenness_Shortage_ISCO_NOGA %>% 
                 group_by(NOGA2digit) %>% 
                 summarise(n_obs = n()) %>% 
-                filter(n_obs < 50) %>%
+                filter(n_obs < 30) %>%
                 select(NOGA2digit)
         NOGA_discard <- NOGA_discard$NOGA2digit
         Greenness_Shortage_ISCO_NOGA <- subset(Greenness_Shortage_ISCO_NOGA, !NOGA2digit %in% NOGA_discard)
 
         # subset the data according to threshold & convert grouping variables
-        Greenness_Shortage_ISCO_NOGA <- subset(Greenness_Shortage_ISCO_NOGA, NOGA2digit >= 0 & norm_lasso_task >= thres)
+        Greenness_Shortage_ISCO_NOGA <- subset(Greenness_Shortage_ISCO_NOGA, norm_lasso_task >= thres)
         Greenness_Shortage_ISCO_NOGA[,c("isco","NOGA2digit", "Region")] <- sapply(Greenness_Shortage_ISCO_NOGA[,c("isco","NOGA2digit", "Region")],
                                                                                   as.character)
         

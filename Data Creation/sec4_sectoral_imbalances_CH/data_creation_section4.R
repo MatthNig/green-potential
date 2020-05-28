@@ -2,7 +2,7 @@
 # Purpose: Use this Script to get the data #      
 #          on emissions (Eurostat),        #
 #          trade (EZV) and GDP (OECD)      #
-# Date:    15.05.2020                      #
+# Date:    28.05.2020                      #
 # Authors: Matthias Niggli, CIEB/Uni Basel #
 #          Christian Rutzer, CIEB/Uni Basel# 
 ############################################
@@ -13,6 +13,7 @@ library("dplyr")
 library("OECD")
 library("readxl")
 library("httr")
+library("data.table")
 
 ############# set path #############
 mainDir1 <- "C:/Users/nigmat01/Dropbox/NFP 73 (WWZ intern)"
@@ -26,10 +27,16 @@ if (file.exists(mainDir1)==T){
         }
 
 
+############# create correspondance frame between OECD value added and rest #########
+noga_oecd <- data.frame(noga = c("10", "11", "12", "13", "14", "15", "16", "17", "18", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "35", "36", "37", "38", "39", "41", "42", "43"),
+                        oecd = c("D10T12", "D10T12", "D10T12", "D13T15", "D13T15","D13T15", "D16", "D17", "D18", "D20", "D21", "D22", "D23", "D24", "D25", "D26", "D27", "D28", "D29", "D30", "D31T32", "D31T32", "D33", "D35", "D36", "D37T39", "D37T39",  "D37T39", "D41T43", "D41T43", "D41T43")) 
+                                 
+                          
+
 ############# load OECD value added data #############
 # dataset_list<-get_datasets()
 # oecd.info <- search_dataset("STAN", data = dataset_list)
-# oecd.info<-get_data_structure("STANI4_2016")
+oecd.info<-get_data_structure("STANI4_2016") # load to get industry names
 # str(oecd.info)
 
 year <- 2015 # 2015 data is the latest year with complete data
@@ -38,9 +45,7 @@ ValueAdded <- get_dataset("STANI4_2016", filter = list( c("CHE"),c("VALU")),
 ValueAdded <- ValueAdded %>% 
         select(IND, obsValue) %>%
         rename(NOGA2digit = IND, ValueAdded_MioCHF = obsValue)
-ValueAdded <- filter(ValueAdded, nchar(NOGA2digit) == 3)
-ValueAdded$NOGA2digit <- substr(ValueAdded$NOGA2digit, 2, 3)
-
+ValueAdded <- filter(ValueAdded, NOGA2digit %in% noga_oecd$oecd)
 
 ############# load EUROSTAT greenhouse gas emission data #############
 GHG_CH <- read.csv(paste(path,"/Daten/erstellte daten/EUROSTAT_GHG_CH.csv",
@@ -89,6 +94,11 @@ GHG_CH <- GHG_CH %>%
 GHG_CH <- rename(GHG_CH, NOGA2digit = NACE_R2)
 GHG_CH$NOGA2digit <- substr(x = GHG_CH$NOGA2digit, 2, 3)
 
+## aggregate data to the same level as value added 
+GHG_CH <- left_join(GHG_CH, noga_oecd, by = c("NOGA2digit" = "noga"))
+GHG_CH <- aggregate(cbind(GHG_emission_average) ~ oecd, FUN = sum, na.rm = T, data = GHG_CH)
+GHG_CH <- dplyr::rename(GHG_CH, NOGA2digit = oecd)
+
 ############# load 2017 trade data from EZV: #############
 
 # EXPORTS: ----------------
@@ -120,8 +130,12 @@ df <- df %>% group_by(NOGA2digit) %>% summarise(Exports_MioCHF = mean(Exports_Mi
                                                 Imports_MioCHF = mean(Imports_MioCHF, na.rm = TRUE))
 df$TradeVolume_MioCHF <- df$Exports_MioCHF + df$Imports_MioCHF
 
-############# merge value added (OECD), trade data (EZV) and GHG emissions (Eurostat) together #############
+## aggregate data to the same level as value added 
+df <- left_join(df, noga_oecd, by = c("NOGA2digit" = "noga"))
+df <- aggregate(cbind(Exports_MioCHF, Imports_MioCHF, TradeVolume_MioCHF) ~ oecd, FUN = sum, na.rm = T, data = df)
+df <- dplyr::rename(df, NOGA2digit = oecd)
 
+############# merge value added (OECD), trade data (EZV) and GHG emissions (Eurostat) together #############
 df <- merge(df, ValueAdded, by= "NOGA2digit")
 df$Handelbarkeit <- df$TradeVolume_MioCHF / df$ValueAdded_MioCHF # calculate Trade (Mio) / ValueAdded (Mio)
 df$Handelbarkeit <- round(df$Handelbarkeit, digits = 3)
@@ -139,8 +153,20 @@ ValueAdded <- NULL
 Greenness_Shortage_ISCO_NOGA <- read.csv(paste(path, "/Daten/erstellte daten/Greenness_Shortage_NOGA_Region.csv", sep= ""),
                                          encoding = "UTF-8", sep=";", 
                                          header=T, row.names = 1)
-NOGAS_NAMES <- read.csv2(paste(getwd(),"/Data Creation/sec4_sectoral_imbalances_CH/NOGAsectorsTitle.csv",sep = ""),
-                         stringsAsFactors = FALSE, colClasses = "character")[, 1:2]
+
+## aggregate data to the same level as value added 
+noga_oecd <- mutate(noga_oecd, noga = as.character(noga))
+Greenness_Shortage_ISCO_NOGA <- mutate(Greenness_Shortage_ISCO_NOGA, NOGA2digit = as.character(NOGA2digit)) %>% left_join(noga_oecd, by = c("NOGA2digit" = "noga"))
+Greenness_Shortage_ISCO_NOGA <- aggregate(cbind(Gewicht) ~ oecd + isco + Region  + year + norm_lasso_task + shortage_index + shortage_index_norm, FUN = sum, na.rm = T, na.action = NULL, data = Greenness_Shortage_ISCO_NOGA)
+Greenness_Shortage_ISCO_NOGA <- dplyr::rename(Greenness_Shortage_ISCO_NOGA, NOGA2digit = oecd)
+
+# German names
+# NOGAS_NAMES <- read.csv2(paste(getwd(),"/Data Creation/sec4_sectoral_imbalances_CH/NOGAsectorsTitle.csv",sep = ""),
+#                           stringsAsFactors = FALSE, colClasses = "character")[, 1:2]
+
+# English names of industries are used in the following. Data are from the OECD
+NOGAS_NAMES_en <- oecd.info$IND
+colnames(NOGAS_NAMES_en) <- c("NOGA2digit", "NOGAS_NAMES")
 
 ############# define subsetting parameters: ############# 
 # Regions:
@@ -148,20 +174,19 @@ REGIONEN <- as.character(unique(Greenness_Shortage_ISCO_NOGA$Region))
 REGIONEN <- c("Schweiz", REGIONEN)
 
 # industries codes to choose (subset to manufacturing and energy sector):
-NOGAS <- unique(Greenness_Shortage_ISCO_NOGA$NOGA2digit)
-NOGAS <- NOGAS[order(NOGAS, decreasing = FALSE)]
-NOGAS <- NOGAS[NOGAS > 0]
-NOGAS <- NOGAS[NOGAS < 36]
+# NOGAS <- unique(Greenness_Shortage_ISCO_NOGA$NOGA2digit)
+# NOGAS <- NOGAS[order(NOGAS, decreasing = FALSE)]
+# NOGAS <- NOGAS[NOGAS > 0]
+# NOGAS <- NOGAS[NOGAS < 36]
 
 # add names of the industries to data.frame:
-NOGAS_NAMES <- subset(NOGAS_NAMES, Codes %in% NOGAS) %>%
-        rename(NOGA2digit = Codes)
-NOGAS_NAMES$Kurztitel.2008..max..40.Zeichen.inkl..Leerstellen. <- paste(NOGAS_NAMES$NOGA2digit, 
-                                                                        NOGAS_NAMES$Kurztitel.2008..max..40.Zeichen.inkl..Leerstellen., sep = " ")
-NOGAS_NAMES <- rename(NOGAS_NAMES, NOGAS_NAMES = Kurztitel.2008..max..40.Zeichen.inkl..Leerstellen.)
+# NOGAS_NAMES <- subset(NOGAS_NAMES_en, Codes %in% NOGAS) %>%
+#         rename(NOGA2digit = Codes)
+# NOGAS_NAMES$Kurztitel.2008..max..40.Zeichen.inkl..Leerstellen. <- paste(NOGAS_NAMES$NOGA2digit, NOGAS_NAMES$Kurztitel.2008..max..40.Zeichen.inkl..Leerstellen., sep = " ")
+# NOGAS_NAMES <- rename(NOGAS_NAMES, NOGAS_NAMES = Kurztitel.2008..max..40.Zeichen.inkl..Leerstellen.)
 
 #  cut-off values:
-THRES <- seq(0.4, 0.8, by = 0.01)
+THRES <- seq(0.4, 0.8, by = 0.05)
 
 ############# create dataset: ############# 
 # get helper functions:
@@ -172,15 +197,31 @@ source(paste(getwd(), "/Data Creation/sec4_sectoral_imbalances_CH/functions_sect
 #       1) share of green jobs per industry and region
 #       2) weighted shortage of these green jobs per industry and regions
 
-df_list <- lapply(THRES, function(x) plot_data_fun(thres = x, Regionen = REGIONEN, NOGAs = NOGAS))
+df_list <- lapply(THRES, function(x) plot_data_fun(thres = x, Regionen = REGIONEN, NOGAs = unique(Greenness_Shortage_ISCO_NOGA$NOGA2digit)))
+
+# concated to a single data.frame and add NOGA_NAMES
 df_list <- lapply(df_list, as.data.frame)
 for(e in 1:length(df_list)){
         df_list[[e]] <- mutate(df_list[[e]], THRES = THRES[e])
 }
 
-############# save the dataset for the ShinyApp: ############# 
-# concated to a single data.frame and add NOGA_NAMES
 df <- bind_rows(df_list)
-df <- merge(df, NOGAS_NAMES, by = "NOGA2digit")
-#saveRDS(df, paste(getwd(), "/Report/data_section4.rds", sep = ""))
+df <- merge(df, NOGAS_NAMES_en, by = "NOGA2digit")
+
+## define raw data with all regions and sectors in order to calculate zero employment shares 
+reg_sec <-  expand.grid(NOGA2digit = unique(Greenness_Shortage_ISCO_NOGA$NOGA2digit),
+                         Region = c("Schweiz", REGIONEN),
+                         THRES = THRES)
+df <- left_join(reg_sec, df, by = c("Region", "NOGA2digit", "THRES")) 
+df <- mutate(df, WeightedShortageGreen = ifelse(is.na(WeightedShortageGreen) != T, WeightedShortageGreen, 0), WeightedShortageGreen_norm = ifelse(is.na(WeightedShortageGreen_norm) != T, WeightedShortageGreen_norm, 0), 
+                    green_emp_share = ifelse(is.na(green_emp_share) != T, green_emp_share, 0))
+
+
+# get Handelbarkeit and value added for Regions where green_emp_share is zero above some threshold 
+df <- arrange(df, THRES, NOGA2digit, Region) 
+df <- setDT(df)[, lapply(.SD, function(x)subset(x, is.na(Handelbarkeit[1]) != T & is.na(GHG_per_ValueAdded[1]) != T)), .(NOGA2digit, Region)]
+df <- df %>% group_by(NOGA2digit) %>% mutate(Handelbarkeit = zoo::na.locf(Handelbarkeit), GHG_per_ValueAdded = zoo::na.locf(GHG_per_ValueAdded), NOGAS_NAMES = zoo::na.locf(NOGAS_NAMES)) %>% as.data.frame()
+
+############# save the dataset for the ShinyApp: ############# 
+saveRDS(df, paste(getwd(), "/Report/data_section4.rds", sep = ""))
 

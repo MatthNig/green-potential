@@ -23,6 +23,18 @@ library(autoimage)
 library(shinyWidgets)
 ```
 
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-71167447-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-71167447-1');
+</script>
+</head>
+
+
 <br>
 
 [![Foo](cieb_logo.jpg){ width=18% }](http://cieb.unibas.ch/)&nbsp;&nbsp;
@@ -33,16 +45,11 @@ library(shinyWidgets)
 <<<<<<< HEAD
 #### <font color='green'>**Transition to a "Green Open Economy": Labour Market Effects and Implications for the Swiss Economy** </font>
 
-*February 2020. By [Matthias Niggli](https://wwz.unibas.ch/de/personen/matthias-niggli/) and [Christian Rutzer](https://wwz.unibas.ch/de/personen/christian-rutzer/)*
 
 =======
 ## <font color="green"> **Greening and the Labor Market** </font>
->>>>>>> c61f93692fe189a7dbb68b4049a6c5e5d53f9cf3
 
-*Mai 2020*
-
-<a href="https://cieb.unibas.ch/de/team/matthias-niggli/" target = "_blank">Matthias Niggli</a> and 
-<a href="https://cieb.unibas.ch/de/team/dr-christian-rutzer/" target = "_blank">Christian Rutzer</a>
+*Mai 2020* <a href="https://cieb.unibas.ch/de/team/matthias-niggli/" target = "_blank">Matthias Niggli</a> and <a href="https://cieb.unibas.ch/de/team/dr-christian-rutzer/" target = "_blank">Christian Rutzer</a>
 
 <img src="nfp73_img.jpg" alt="Smiley face">
 
@@ -66,13 +73,13 @@ colnames(isco_list) <- c("ISCO", "Occupation", "Estimated Green Potential")
 
 # make the table
 renderDT(
-        datatable(isco_list,
+        datatable(isco_list,  extensions = 'Scroller',
                   class = "display nowrap compact", # style
                   filter = "top", # location of column filters
                   rownames= FALSE,
-                  options = list(pageLength = 20, dom = 'tp', 
+                  options = list(scrollY = 180, scroller = TRUE, pageLength = 20, dom = 'tp', 
                                  columnDefs=list(list(targets=0:2, className="dt-left")))) %>% 
-                formatStyle(columns = c("Estimated Green Potential", "Estimated Green Potential"), 
+                formatStyle(0:3, target = "row", 
                             backgroundColor = styleInterval(seq(0,1,0.05),
                                                             colorRampPalette(c(rgb(0,0,0.1,0.1),
                                                                                rgb(0,1,0,0.7)), alpha=TRUE)(22)))
@@ -168,20 +175,34 @@ Mir gibt es da 277 ISCOs an. Für green.potential habe ich diese Liste verwendet
 
 ```{r, echo = F}
 sec3_dat <- readRDS("data_section3.rds")
+# renderDT(
+#         datatable(sec3_dat, 
+#                   class = "display nowrap compact", # style
+#                   filter = "top", # location of column filters
+#                   rownames= FALSE,
+#                   # fillContainer = FALSE,
+#                   options = list(pageLength = 20, dom = 'tp', 
+#                                  columnDefs=list(list(targets=0:3, className="dt-left")))) %>% 
+#                 formatStyle(columns = c("Estimated Green Potential", "Estimated Green Potential"), 
+#                             backgroundColor = styleInterval(seq(0,1,0.05),
+#                                                             colorRampPalette(c(rgb(0,0,0.1,0.1),
+#                                                                                rgb(0,1,0,0.7)), 
+#                                                                              alpha=TRUE)(22))
+#                             )
+#         )
+
+
 renderDT(
-        datatable(sec3_dat, 
+        datatable(sec3_dat,  extensions = 'Scroller',
                   class = "display nowrap compact", # style
                   filter = "top", # location of column filters
                   rownames= FALSE,
-                  # fillContainer = FALSE,
-                  options = list(pageLength = 20, dom = 'tp', 
-                                 columnDefs=list(list(targets=0:3, className="dt-left")))) %>% 
-                formatStyle(columns = c("Estimated Green Potential", "Estimated Green Potential"), 
+                  options = list(scrollY = 180, scroller = TRUE, scrollX = F, pageLength = 20, dom = 'tp', 
+                                 columnDefs=list(list(targets=0:2, className="dt-left")))) %>% 
+                formatStyle(3, target = "row", 
                             backgroundColor = styleInterval(seq(0,1,0.05),
                                                             colorRampPalette(c(rgb(0,0,0.1,0.1),
-                                                                               rgb(0,1,0,0.7)), 
-                                                                             alpha=TRUE)(22))
-                            )
+                                                                               rgb(0,1,0,0.7)), alpha=TRUE)(22)))
         )
 ```
 <span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data.  All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
@@ -198,28 +219,29 @@ plot1_data <- subset(sec4_dat,
                      NOGA2digit %in% NOGAS & 
                              NOGA2digit != 24 & # discard outlier
                              THRES == 0.4 & # set a random threshold. plot does not depend on it
-                             Region == "Schweiz")
+                             Region == "Schweiz") %>% mutate(Industry = paste(NOGAS_NAMES, "\nTradeability:", round(Handelbarkeit, 2), "\nGreenhouse gas emissions per value added", round(log(GHG_per_ValueAdded), 2)))
 
 # make the plot: 
 renderPlotly({
         ggplotly(
                 ggplot(data = plot1_data, aes(x = Handelbarkeit, y= log(GHG_per_ValueAdded),
-                                              color = log(GHG_per_ValueAdded)))+
-                geom_point(size = 4, alpha = 0.7)+
+                                              color = log(GHG_per_ValueAdded), size = Handelbarkeit, label = Industry))+
+                geom_point(alpha = 0.7)+
                 geom_text(aes(label = NOGA2digit), size = 3, check_overlap = FALSE, nudge_x = +0.08, nudge_y = +0.05)+
                 xlab("Tradeability")+
-                ylab("Greenhouse gas emissions per value added")+
-                scale_color_viridis(option="viridis", begin = 0.7, end = 0.5, discrete = FALSE, name = "None")+
+                ylab("Greenhouse gas emissions per value added\n (in logs)")+
+                scale_color_viridis(option="viridis", begin = 0.7, end = 0.4, discrete = FALSE, name = "None")+
                 guides(color = FALSE)+
                 theme(axis.title = element_text(face="bold",size=10),
                       panel.background = element_blank(),
                       axis.line = element_line()
                       ),
                 tooltip = c("label"), dynamicTicks = T) %>%
-                config(displayModeBar = T) %>% 
+                config(displayModeBar = F) %>% 
                 layout(xaxis=list(fixedrange=TRUE)) %>% 
                 layout(yaxis=list(fixedrange=TRUE))
         })
+
 ```
 <span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data. All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
 
@@ -283,29 +305,30 @@ renderPlotly({
                round(THRES, 2) == input$cutOff & # selected cutOff (use round() to make sure numbers match)
                Region %in% input$REGIONEN & # selected Region(s)
                NOGA2digit %in% NOGAS # selected NOGA codes 
-               )
+               ) %>% mutate(Industry = paste(NOGAS_NAMES, "\nShare of jobs with green potential:", round(green_emp_share, 2), "\nShortage of jobs with green potential:", round(WeightedShortageGreen, 2), "\nTradeability:", round(Handelbarkeit, 2), "\nGreenhouse gas emissions per value added (in logs)", round(log(GHG_per_ValueAdded), 2)))
 
         # make the plot
         ggplotly(
-                ggplot(data = plot2_data, aes(x = green_emp_share, y= WeightedShortageGreen ))+
-                geom_point(color = "blue4", size = 4, alpha = 0.7)+
-                geom_text(aes(label = NOGA2digit), size = 3, check_overlap = FALSE, nudge_x = +0.01, nudge_y = +0.02)+
+                ggplot(data = plot2_data, aes(x = green_emp_share, y= WeightedShortageGreen, label = Industry, color = log(GHG_per_ValueAdded), size = Handelbarkeit))+
+                geom_point(alpha = 0.7)+
+                geom_text(aes(label = NOGA2digit), size = 4, check_overlap = FALSE, position = position_nudge(y = +0.1))+
                 xlab(paste("Employment share of jobs with  green potential \n (Region: ",
                            paste0(input$REGIONEN, collapse = " & "),
                            ", green potential of at least ",input$cutOff,")", sep=""))+
                 ylab(paste("Shortage of jobs with green potential \n (Region: ", 
                            paste0(input$REGIONEN, collapse = " & "),
                            ", green potential of at least ", input$cutOff,")",sep = ""))+
-                ylim(-0.5, 7)+
-                xlim(0, 0.5)+
+                ylim(min(plot2_data$WeightedShortageGreen), max(plot2_data$WeightedShortageGreen))+
+                xlim(min(plot2_data$green_emp_share), max(plot2_data$green_emp_share))+
                 guides(color = FALSE)+
+                scale_color_viridis(option="viridis", begin = 0.7, end = 0.4, discrete = FALSE, name = "None")+
                 theme(axis.title = element_text(face="bold",size = 10),
                       panel.background = element_blank(),
                       axis.line = element_line()
                       ),
                 
                 tooltip = c("label"), dynamicTicks = T) %>%
-                config(displayModeBar = T) %>% 
+                config(displayModeBar = F) %>% 
                 layout(xaxis = list(fixedrange=TRUE)) %>% 
                 layout(yaxis = list(fixedrange=TRUE))
         })
