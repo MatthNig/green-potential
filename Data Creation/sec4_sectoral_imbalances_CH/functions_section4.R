@@ -9,11 +9,11 @@
 
 weighting_fun <- function(thres){
         
-        # discard NOGAs that do not have at least 50 observations in the SAKE data
+        # discard NOGAs that do not have at least 30 observations in the SAKE data
         NOGA_discard <- Greenness_Shortage_ISCO_NOGA %>% 
                 group_by(NOGA2digit) %>% 
                 summarise(n_obs = n()) %>% 
-                filter(n_obs < 50) %>%
+                filter(n_obs < 30) %>%
                 select(NOGA2digit)
         NOGA_discard <- NOGA_discard$NOGA2digit
         Greenness_Shortage_ISCO_NOGA <- subset(Greenness_Shortage_ISCO_NOGA, !NOGA2digit %in% NOGA_discard)

@@ -1,5 +1,4 @@
 ## Datengenerierung für Web-App "green potential" part III green potential shortages isco / CR 13.5.2020
-###TEST
 require(foreign)
 require(dplyr)
 require(ggplot2)
@@ -23,7 +22,7 @@ library("maps")
 
 rm(list = ls())
 mainDir1 <- ""
-mainDir2 <- "C:/Users/christian rutzer/Dropbox/NFP 73 (WWZ intern)/R Codes/Dynamic output"
+mainDir2 <- ""
 
 if (file.exists(mainDir1)){
 	setwd(file.path(mainDir1))
@@ -43,5 +42,5 @@ isco_list <- left_join(isco_list, short, by = c("ISCO" = "job"))
 colnames(isco_list) <- c("ISCO", "Occupation", "Estimated Green Potential", "Shortage Indicator")
 
 isco_list %>% saveRDS(paste0(getwd(), "/data_section3.RDS"))
-
+isco_list %>% write.csv(paste0(getwd(), "/isco_list_knappheit.csv"))
 

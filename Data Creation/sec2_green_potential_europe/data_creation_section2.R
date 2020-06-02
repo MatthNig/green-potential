@@ -37,7 +37,7 @@ if (file.exists(mainDir1)==T){
 ## Load data of green potential estimates
 lasso.pred.table <- read.csv2(paste0(path, "/NFP 73/Output/paper green potential in europe/Daten/lasso_three_isco.csv"))
 
-## Following data has to be on wwz-shared driver due to privacy and security contract with the BFS 
+## Following data has to saved on the wwz-shared driver due to privacy and security contract with the BFS 
 dat.2011 <- readRDS("X:/_shared/Projekt - Green Open Economy/dat.2011.ml.RDS")
 dat.2011$num.new <- 1
 setDT(dat.2011)[, ges := sum(num.new), list(isco, iso, year, emp)]
