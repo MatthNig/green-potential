@@ -2,7 +2,7 @@
 # Purpose: Use this Script to get the data #      
 #          on emissions (Eurostat),        #
 #          trade (EZV) and GDP (OECD)      #
-# Date:    15.05.2020                      #
+# Date:    03.06.2020                      #
 # Authors: Matthias Niggli, CIEB/Uni Basel #
 #          Christian Rutzer, CIEB/Uni Basel# 
 ############################################
@@ -136,7 +136,7 @@ GHG_CH <- NULL
 ValueAdded <- NULL
 
 ############# load employment and industry data (SAKE) with shortage indicators (from BSS): #############
-Greenness_Shortage_ISCO_NOGA <- read.csv(paste(path, "/Daten/erstellte daten/Greenness_Shortage_NOGA_Region.csv", sep= ""),
+Greenness_Shortage_ISCO_NOGA <- read.csv(paste(path, "/Daten/erstellte daten/Greenness_Shortage_NOGA_Region_AllYears.csv", sep= ""),
                                          encoding = "UTF-8", sep=";", 
                                          header=T, row.names = 1)
 NOGAS_NAMES <- read.csv2(paste(getwd(),"/Data Creation/sec4_sectoral_imbalances_CH/NOGAsectorsTitle.csv",sep = ""),

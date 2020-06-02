@@ -2,14 +2,14 @@
 # Purpose: Defines necessary functions      #      
 #          to run the graph in section 4    #
 #          of the shiny application         #
-# Date:    11.05.2020                       #
+# Date:    02.06.2020                       #
 # Authors: Matthias Niggli, CIEB/Uni Basel  #
 #          Christian Rutzer, CIEB/Uni Basel #
 #############################################
 
 weighting_fun <- function(thres){
         
-        # discard NOGAs that do not have at least 50 observations in the SAKE 2019 data
+        # discard NOGAs that do not have at least 50 observations in the SAKE data
         NOGA_discard <- Greenness_Shortage_ISCO_NOGA %>% 
                 group_by(NOGA2digit) %>% 
                 summarise(n_obs = n()) %>% 
@@ -19,7 +19,7 @@ weighting_fun <- function(thres){
         Greenness_Shortage_ISCO_NOGA <- subset(Greenness_Shortage_ISCO_NOGA, !NOGA2digit %in% NOGA_discard)
 
         # subset the data according to threshold & convert grouping variables
-        Greenness_Shortage_ISCO_NOGA <- subset(Greenness_Shortage_ISCO_NOGA, NOGA2digit >= 0 & norm_lasso_task >= thres)
+        Greenness_Shortage_ISCO_NOGA <- subset(Greenness_Shortage_ISCO_NOGA, NOGA2digit >= 0 & green >= thres)
         Greenness_Shortage_ISCO_NOGA[,c("isco","NOGA2digit", "Region")] <- sapply(Greenness_Shortage_ISCO_NOGA[,c("isco","NOGA2digit", "Region")],
                                                                                   as.character)
         
@@ -60,7 +60,7 @@ weighting_fun <- function(thres){
 plot_data_fun <- function(thres, Regionen = "Schweiz", NOGAs){
         
         # define green jobs according to threshold 
-        green_jobs <- subset(Greenness_Shortage_ISCO_NOGA, norm_lasso_task >= thres)
+        green_jobs <- subset(Greenness_Shortage_ISCO_NOGA, green >= thres)
         green_jobs <- green_jobs[!duplicated(green_jobs$isco), ]
         
         # TEST: print a warning message if not all isco weights sum to 1 -----------------
@@ -81,7 +81,7 @@ plot_data_fun <- function(thres, Regionen = "Schweiz", NOGAs){
         
         # combine these weights with shortage_index, green employment shares and 'Handelbarkeit' in one data.frame for plotting:
         SAKE_weights <- merge(SAKE_weights, 
-                              green_jobs[, c("isco", "norm_lasso_task", "shortage_index", "shortage_index_norm")],
+                              green_jobs[, c("isco", "green", "shortage_index", "shortage_index_norm")],
                               by = "isco", all.x = TRUE)
         plot_data <- merge(SAKE_weights, emp_shares, by = c("Region", "NOGA2digit"), all.x = TRUE)
         plot_data <- merge(plot_data, Handelbarkeit, by = "NOGA2digit")
