@@ -40,13 +40,7 @@ library(shinyWidgets)
 [![Foo](cieb_logo.jpg){ width=18% }](http://cieb.unibas.ch/)&nbsp;&nbsp;
 [![Foo](nrp_73_logo.jpg){ width=25% }](http://www.nrp73.ch/)&nbsp;
 [![Foo](snf_logo.png){ width=25% }](http://www.snf.ch/)&nbsp;&nbsp;
-[![Foo](bss_logo.jpg){ width=12% }](http://www.bss-basel.ch/)&nbsp;&nbsp;
 
-<<<<<<< HEAD
-#### <font color='green'>**Transition to a "Green Open Economy": Labour Market Effects and Implications for the Swiss Economy** </font>
-
-
-=======
 ## <font color="green"> **Greening and the Labor Market** </font>
 
 *Mai 2020* <a href="https://cieb.unibas.ch/de/team/matthias-niggli/" target = "_blank">Matthias Niggli</a> and <a href="https://cieb.unibas.ch/de/team/dr-christian-rutzer/" target = "_blank">Christian Rutzer</a>
@@ -217,7 +211,7 @@ NOGAS <- unique(sec4_dat$NOGA2digit)
 NOGAS_NAMES <- unique(sec4_dat$NOGAS_NAMES)
 plot1_data <- subset(sec4_dat, 
                      NOGA2digit %in% NOGAS & 
-                             NOGA2digit != 24 & # discard outlier
+                             NOGA2digit != "D24" & # discard outliers
                              THRES == 0.4 & # set a random threshold. plot does not depend on it
                              Region == "Schweiz") %>% mutate(Industry = paste(NOGAS_NAMES, "\nTradeability:", round(Handelbarkeit, 2), "\nGreenhouse gas emissions per value added", round(log(GHG_per_ValueAdded), 2)))
 
@@ -249,23 +243,23 @@ renderPlotly({
 
 ```{r, echo = F}
 # define the input panels: -------------------------------------------------------------------------
-fluidRow(
-        column(4,
-pickerInput(
-  inputId = "REGIONEN", 
-  label = "Choose a region", 
-  choices = REGIONEN, 
-  selected = "Schweiz",
-  options = list(
-    `actions-box` = TRUE, 
-    `selected-text-format` = "count > 3",
-    `count-selected-text` = "Alle",
-    `deselect-all-text` = "Discard all",
-    `select-all-text` = "Seclect all",
-    `none-selected-text` = 'No regions selected'), 
-  multiple = FALSE)
-),
-column(4,
+#fluidRow(
+#         column(4,
+# pickerInput(
+#   inputId = "REGIONEN",
+#   label = "Choose a region",
+#   choices = REGIONEN,
+#   selected = "Schweiz",
+#   options = list(
+#     `actions-box` = TRUE,
+#     `selected-text-format` = "count > 3",
+#     `count-selected-text` = "Alle",
+#     `deselect-all-text` = "Discard all",
+#     `select-all-text` = "Seclect all",
+#     `none-selected-text` = 'No regions selected'),
+#   multiple = FALSE)
+# ),
+# column(4,
 pickerInput(
   inputId = "NOGAS_NAMES", 
   label = "Choose industries", 
@@ -280,8 +274,8 @@ pickerInput(
     `select-all-text` = "Select all",
     `none-selected-text` = 'No industries selected'), 
   multiple = TRUE)
-)
-)
+# )
+#)
 
 # make a slider input for the treshold ----------------------------------------------
 sliderInput("cutOff",
@@ -303,31 +297,39 @@ renderPlotly({
         
         plot2_data <- subset(sec4_dat,
                round(THRES, 2) == input$cutOff & # selected cutOff (use round() to make sure numbers match)
-               Region %in% input$REGIONEN & # selected Region(s)
-               NOGA2digit %in% NOGAS # selected NOGA codes 
-               ) %>% mutate(Industry = paste(NOGAS_NAMES, "\nShare of jobs with green potential:", round(green_emp_share, 2), "\nShortage of jobs with green potential:", round(WeightedShortageGreen, 2), "\nTradeability:", round(Handelbarkeit, 2), "\nGreenhouse gas emissions per value added (in logs)", round(log(GHG_per_ValueAdded), 2)))
+               Region == "Schweiz" &
+                # Region %in% input$REGIONEN & # selected Region(s)
+               NOGA2digit %in% NOGAS & # selected NOGA codes 
+               NOGA2digit != "D24"
+               ) %>%
+                mutate(Industry = paste(NOGAS_NAMES, "\nShare of jobs with green potential:", 
+                                        round(green_emp_share, 2), "\nShortage of jobs with green potential:",
+                                        round(WeightedShortageGreen, 2), "\nTradeability:", round(Handelbarkeit, 2),
+                                        "\nGreenhouse gas emissions per value added (in logs)",
+                                        round(log(GHG_per_ValueAdded), 2)
+                                        )
+                       )
 
         # make the plot
         ggplotly(
-                ggplot(data = plot2_data, aes(x = green_emp_share, y= WeightedShortageGreen, label = Industry, color = log(GHG_per_ValueAdded), size = Handelbarkeit))+
+                ggplot(data = plot2_data, aes(x = green_emp_share, y= WeightedShortageGreen, 
+                                              label = Industry, color = log(GHG_per_ValueAdded), 
+                                              size = Handelbarkeit))+
                 geom_point(alpha = 0.7)+
                 geom_text(aes(label = NOGA2digit), size = 4, check_overlap = FALSE, position = position_nudge(y = +0.1))+
-                xlab(paste("Employment share of jobs with  green potential \n (Region: ",
-                           paste0(input$REGIONEN, collapse = " & "),
-                           ", green potential of at least ",input$cutOff,")", sep=""))+
-                ylab(paste("Shortage of jobs with green potential \n (Region: ", 
-                           paste0(input$REGIONEN, collapse = " & "),
-                           ", green potential of at least ", input$cutOff,")",sep = ""))+
-                ylim(min(plot2_data$WeightedShortageGreen), max(plot2_data$WeightedShortageGreen))+
-                xlim(min(plot2_data$green_emp_share), max(plot2_data$green_emp_share))+
+                xlab(paste("Employment share of jobs with  green potential in Switzerland \n (green potential of at least",
+                           input$cutOff,")", sep=""))+
+                ylab(paste("Shortage of jobs with green potential in Switzerland \n (green potential of at least ",
+                           input$cutOff,")",sep = ""))+
+                ylim(c(-0.2, 2.5))+
+                xlim(c(0, 1))+
                 guides(color = FALSE)+
                 scale_color_viridis(option="viridis", begin = 0.7, end = 0.4, discrete = FALSE, name = "None")+
                 theme(axis.title = element_text(face="bold",size = 10),
                       panel.background = element_blank(),
                       axis.line = element_line()
                       ),
-                
-                tooltip = c("label"), dynamicTicks = T) %>%
+                tooltip = c("label"), dynamicTicks = FALSE) %>%
                 config(displayModeBar = F) %>% 
                 layout(xaxis = list(fixedrange=TRUE)) %>% 
                 layout(yaxis = list(fixedrange=TRUE))
