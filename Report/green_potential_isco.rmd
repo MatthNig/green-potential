@@ -206,6 +206,7 @@ renderDT(
 ```{r, echo = F}
 #### load the data and define input parameters for plotting -------------------------------------------------
 sec4_dat <- readRDS("data_section4.rds")
+sec4_dat <- mutate(sec4_dat, NOGAS_NAMES = paste0(NOGA2digit, " ", NOGAS_NAMES))
 REGIONEN <- as.character(unique(sec4_dat$Region))
 NOGAS <- unique(sec4_dat$NOGA2digit)
 NOGAS_NAMES <- unique(sec4_dat$NOGAS_NAMES)
