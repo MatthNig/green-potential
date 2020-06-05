@@ -61,13 +61,12 @@ We have investigated questions like this in a reserach project, which is funded 
 
 ```{r, echo = F}
 # get the data:
-isco_list <- read.csv2("isco_list.csv")
-isco_list <- mutate(isco_list, ISCO = as.character(ISCO), green = as.numeric(as.character(green)))
-colnames(isco_list) <- c("ISCO", "Occupation", "Estimated Green Potential")
+isco_list <- readRDS("data_section1&3.rds")
+isco_green <- isco_list[["isco_green"]]
 
 # make the table
 renderDT(
-        datatable(isco_list,  extensions = 'Scroller',
+        datatable(isco_green,  extensions = 'Scroller',
                   class = "display nowrap compact", # style
                   filter = "top", # location of column filters
                   rownames= FALSE,
@@ -155,39 +154,12 @@ renderText({
 
 #### <font color='green'> **The Green Transition in Switzerland** </font>
 
-
-<font color='red'> PROBLEM: SHORTAGE INDICATOR NOT AVAILABLE FOR A LOT OF OCCUPTIONS -> MICHAEL FRAGEN</font>
-
-MN: Habe gemerkt, dass ich dasselbe Problem habe. Ich habe bei Michael angefragt als ich mit dem Sammelband begann und habe von ihm dieses .csv hier bekommen: *./Dropbox/NFP 73/Output/paper green potential in europe/Daten/indicators-4digit.xlsx*
-Mir gibt es da 277 ISCOs an. Für green.potential habe ich diese Liste verwendet: *./Dropbox/NFP 73 (WWZ intern)/Daten/ISCO/isco_list.csv*. Hier komme ich auf 323 iscos 
-
-=> 46 Missings bei Michaels Daten.
-
-=> unbedingt darauf achten, dass wir uns hier auf die gleichen Daten beziehen!!!
-
 <br>
 
 ```{r, echo = F}
-sec3_dat <- readRDS("data_section3.rds")
-# renderDT(
-#         datatable(sec3_dat, 
-#                   class = "display nowrap compact", # style
-#                   filter = "top", # location of column filters
-#                   rownames= FALSE,
-#                   # fillContainer = FALSE,
-#                   options = list(pageLength = 20, dom = 'tp', 
-#                                  columnDefs=list(list(targets=0:3, className="dt-left")))) %>% 
-#                 formatStyle(columns = c("Estimated Green Potential", "Estimated Green Potential"), 
-#                             backgroundColor = styleInterval(seq(0,1,0.05),
-#                                                             colorRampPalette(c(rgb(0,0,0.1,0.1),
-#                                                                                rgb(0,1,0,0.7)), 
-#                                                                              alpha=TRUE)(22))
-#                             )
-#         )
-
-
+isco_shortage <- isco_list[["isco_shortage"]]
 renderDT(
-        datatable(sec3_dat,  extensions = 'Scroller',
+        datatable(isco_shortage,  extensions = 'Scroller',
                   class = "display nowrap compact", # style
                   filter = "top", # location of column filters
                   rownames= FALSE,
@@ -199,7 +171,7 @@ renderDT(
                                                                                rgb(0,1,0,0.7)), alpha=TRUE)(22)))
         )
 ```
-<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data.  All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
+<span style="font-size:0.8em">*Source: <a href="https://bss-basel.ch" target ="blank">BSS</a> and own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data. All the data is available on  [GitHub](https://github.com/matthnig/green-potential).*</span>
 
 <br>
 
@@ -210,6 +182,7 @@ sec4_dat <- mutate(sec4_dat, NOGAS_NAMES = paste0(NOGA2digit, " ", NOGAS_NAMES))
 REGIONEN <- as.character(unique(sec4_dat$Region))
 NOGAS <- unique(sec4_dat$NOGA2digit)
 NOGAS_NAMES <- unique(sec4_dat$NOGAS_NAMES)
+NOGAS_NAMES <- NOGAS_NAMES[NOGAS_NAMES != "D24  Basic metals"] # outlier
 plot1_data <- subset(sec4_dat, 
                      NOGA2digit %in% NOGAS & 
                              NOGA2digit != "D24" & # discard outliers
@@ -222,7 +195,7 @@ renderPlotly({
                 ggplot(data = plot1_data, aes(x = Handelbarkeit, y= log(GHG_per_ValueAdded),
                                               color = log(GHG_per_ValueAdded), size = Handelbarkeit, label = Industry))+
                 geom_point(alpha = 0.7)+
-                geom_text(aes(label = NOGA2digit), size = 3, check_overlap = FALSE, nudge_x = +0.08, nudge_y = +0.05)+
+                # geom_text(aes(label = NOGA2digit), size = 3, check_overlap = FALSE, nudge_x = +0.08, nudge_y = +0.05)+
                 xlab("Tradeability")+
                 ylab("Greenhouse gas emissions per value added\n (in logs)")+
                 scale_color_viridis(option="viridis", begin = 0.7, end = 0.4, discrete = FALSE, name = "None")+
@@ -243,24 +216,7 @@ renderPlotly({
 <br>
 
 ```{r, echo = F}
-# define the input panels: -------------------------------------------------------------------------
-#fluidRow(
-#         column(4,
-# pickerInput(
-#   inputId = "REGIONEN",
-#   label = "Choose a region",
-#   choices = REGIONEN,
-#   selected = "Schweiz",
-#   options = list(
-#     `actions-box` = TRUE,
-#     `selected-text-format` = "count > 3",
-#     `count-selected-text` = "Alle",
-#     `deselect-all-text` = "Discard all",
-#     `select-all-text` = "Seclect all",
-#     `none-selected-text` = 'No regions selected'),
-#   multiple = FALSE)
-# ),
-# column(4,
+# define the input panel for industries: -------------------------------------------------------------------------
 pickerInput(
   inputId = "NOGAS_NAMES", 
   label = "Choose industries", 
@@ -275,8 +231,6 @@ pickerInput(
     `select-all-text` = "Select all",
     `none-selected-text` = 'No industries selected'), 
   multiple = TRUE)
-# )
-#)
 
 # make a slider input for the treshold ----------------------------------------------
 sliderInput("cutOff",
@@ -293,7 +247,6 @@ sliderInput("cutOff",
 renderPlotly({
                 
         # subset the data accoding to the input:
-        
         NOGAS <- sec4_dat[sec4_dat$NOGAS_NAMES %in% input$NOGAS_NAMES, "NOGA2digit"] # get selected NOGA codes
         
         plot2_data <- subset(sec4_dat,
@@ -317,13 +270,13 @@ renderPlotly({
                                               label = Industry, color = log(GHG_per_ValueAdded), 
                                               size = Handelbarkeit))+
                 geom_point(alpha = 0.7)+
-                geom_text(aes(label = NOGA2digit), size = 4, check_overlap = FALSE, position = position_nudge(y = +0.1))+
+                # geom_text(aes(label = NOGA2digit), size = 4, check_overlap = FALSE, position = position_nudge(y = +0.1))+
                 xlab(paste("Employment share of jobs with  green potential in Switzerland \n (green potential of at least",
                            input$cutOff,")", sep=""))+
                 ylab(paste("Shortage of jobs with green potential in Switzerland \n (green potential of at least ",
                            input$cutOff,")",sep = ""))+
-                ylim(c(-0.2, 2.5))+
-                xlim(c(0, 1))+
+                ylim(c(-1, 2.5))+
+                xlim(c(0, 0.6))+
                 guides(color = FALSE)+
                 scale_color_viridis(option="viridis", begin = 0.7, end = 0.4, discrete = FALSE, name = "None")+
                 theme(axis.title = element_text(face="bold",size = 10),

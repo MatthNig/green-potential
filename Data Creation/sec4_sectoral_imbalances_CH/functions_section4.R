@@ -16,10 +16,13 @@ weighting_fun <- function(thres){
                 filter(n_obs < 30) %>%
                 select(NOGA2digit)
         NOGA_discard <- NOGA_discard$NOGA2digit
-        Greenness_Shortage_ISCO_NOGA <- subset(Greenness_Shortage_ISCO_NOGA, !NOGA2digit %in% NOGA_discard)
+        if(length(NOGA_discard) > 0){
+                Greenness_Shortage_ISCO_NOGA <- subset(Greenness_Shortage_ISCO_NOGA, !NOGA2digit %in% NOGA_discard)
+        }
+#        Greenness_Shortage_ISCO_NOGA <- subset(Greenness_Shortage_ISCO_NOGA, !NOGA2digit %in% NOGA_discard)
 
         # subset the data according to threshold & convert grouping variables
-        Greenness_Shortage_ISCO_NOGA <- subset(Greenness_Shortage_ISCO_NOGA, NOGA2digit >= 0 & green >= thres)
+        Greenness_Shortage_ISCO_NOGA <- subset(Greenness_Shortage_ISCO_NOGA, green >= thres)
         Greenness_Shortage_ISCO_NOGA[,c("isco","NOGA2digit", "Region")] <- sapply(Greenness_Shortage_ISCO_NOGA[,c("isco","NOGA2digit", "Region")],
                                                                                   as.character)
         

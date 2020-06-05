@@ -157,7 +157,7 @@ Greenness_Shortage_ISCO_NOGA <- read.csv(paste(path, "/Daten/erstellte daten/Gre
 ## aggregate data to the same level as value added 
 noga_oecd <- mutate(noga_oecd, noga = as.character(noga))
 Greenness_Shortage_ISCO_NOGA <- mutate(Greenness_Shortage_ISCO_NOGA, NOGA2digit = as.character(NOGA2digit)) %>% left_join(noga_oecd, by = c("NOGA2digit" = "noga"))
-Greenness_Shortage_ISCO_NOGA <- aggregate(cbind(Gewicht) ~ oecd + isco + Region  + year + norm_lasso_task + shortage_index + shortage_index_norm, FUN = sum, na.rm = T, na.action = NULL, data = Greenness_Shortage_ISCO_NOGA)
+Greenness_Shortage_ISCO_NOGA <- aggregate(cbind(Gewicht) ~ oecd + isco + Region  + year + green + shortage_index + shortage_index_norm, FUN = sum, na.rm = T, na.action = NULL, data = Greenness_Shortage_ISCO_NOGA)
 Greenness_Shortage_ISCO_NOGA <- dplyr::rename(Greenness_Shortage_ISCO_NOGA, NOGA2digit = oecd)
 
 # German names
@@ -223,5 +223,6 @@ df <- setDT(df)[, lapply(.SD, function(x)subset(x, is.na(Handelbarkeit[1]) != T 
 df <- df %>% group_by(NOGA2digit) %>% mutate(Handelbarkeit = zoo::na.locf(Handelbarkeit), GHG_per_ValueAdded = zoo::na.locf(GHG_per_ValueAdded), NOGAS_NAMES = zoo::na.locf(NOGAS_NAMES)) %>% as.data.frame()
 
 ############# save the dataset for the ShinyApp: ############# 
-saveRDS(df, paste(getwd(), "/Report/data_section4.rds", sep = ""))
+# maybe better save it as a .csv for non RUsers...
+#saveRDS(df, paste(getwd(), "/Report/data_section4.rds", sep = ""))
 

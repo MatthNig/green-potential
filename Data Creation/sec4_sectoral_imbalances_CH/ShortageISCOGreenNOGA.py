@@ -5,22 +5,13 @@ import os
 
 # repo_path = xxxxxxxxxxxxxxxxxxxx # state the path of of the repository
 repo_path = "C:/Users/Matthias/Documents/GithubRepos/green-potential/"
-
 os.chdir(repo_path)
 
 def SAKE_path_fun(laufwerk):
     SAKE_path=laufwerk+":/Daten/"
     return SAKE_path
-SAKE_path=SAKE_path_fun("X") # set the name where the SAKE data is stored on your computer
-# def shortage_path_fun(user):
-#     shortage_path="C:/Users/"+user+"/Dropbox/NFP 73/Output/paper green potential in europe/Daten/"
-#     return shortage_path
-# 
+SAKE_path=SAKE_path_fun("X") # set the path where the SAKE data is stored on your computer
 
-# specify the paths ----------------------------------
-
-#dropbox_path=dropbox_path_fun("Matthias") # set the user name of your machine
-#shortage_path=shortage_path_fun("Matthias") # set the user name of your machine
 print("Libraries are loaded and directories are set.")
 
 #%% LOAD SAKE DATA SUBSET TO VARIABLES OF INTEREST
@@ -77,14 +68,30 @@ print("available years: ", SAKE_dat.year.unique())
 
 #%% MERGE WITH GREEN POTENTIAL
 
-def load_green():
-    # df=pd.read_csv(dropbox_path+"ISCO/isco_list.csv",sep=";").loc[:,["isco","norm.lasso.task"]]
-    df=pd.read_csv(repo_path+"Report/isco_list.csv",sep=";").loc[:,["ISCO","green"]]
+# def load_green():
+#     # df=pd.read_csv(dropbox_path+"ISCO/isco_list.csv",sep=";").loc[:,["isco","norm.lasso.task"]]
+#     # df=pd.read_csv(repo_path+"Report/isco_list.csv",sep=";").loc[:,["ISCO","green"]]
+#     df.rename(columns = {df.columns[1]: df.columns[1].replace(".","_")}, inplace=True)
+#     df.rename(columns = {df.columns[0]: "isco"}, inplace=True)
+#     return df
+
+#green=load_green()
+ 
+# new version ------------
+def load_isco():
+    df=pd.read_csv(repo_path+"Data Creation/sec1&3_green_potential_shortages_isco/isco_list.csv",sep=";")
     df.rename(columns = {df.columns[1]: df.columns[1].replace(".","_")}, inplace=True)
     df.rename(columns = {df.columns[0]: "isco"}, inplace=True)
+    df.drop(["Title"], axis = 1, inplace = True)
     return df
 
-green=load_green()
+green = load_isco()
+shortage = green.drop("green", axis = 1)
+green = green.drop("index1", axis = 1)
+green["green"] = [x.replace(",",".") for x in green["green"]]
+green["green"] = green["green"].astype("float")
+# -----------------
+
 print("number of 4-digit ISCO occupations :", len(green))
 SAKE_dat=SAKE_dat.merge(green,on="isco", how = "left")
 
@@ -130,26 +137,42 @@ print(SAKE_dat.head())
 
 #%% MERGE WITH SHORTAGE INDICATORS
 
-# !!! UPDATE AS SOON AS WE HAVE A NEW LIST FROM MICHAEL
-
-def shortage_fun(df_NOGA):
-    shortage=pd.read_excel("C:/Users/Matthias/Dropbox/NFP 73/Output/paper green potential in europe/Daten/indicators_4digit.xlsx")
-    shortage = shortage.loc[:, ["job", "index1"]]
-    shortage.rename(columns={"job": "isco", "index1": "shortage_index"}, inplace=True)
+# def shortage_fun(df_NOGA):
+#     shortage=pd.read_excel("C:/Users/Matthias/Dropbox/NFP 73/Output/paper green potential in europe/Daten/indicators_4digit.xlsx")
+#     shortage = shortage.loc[:, ["job", "index1"]]
+#     shortage.rename(columns={"job": "isco", "index1": "shortage_index"}, inplace=True)
     
+#     tmp=shortage["shortage_index"]
+#     shortage["shortage_index_norm"]=tmp.map(lambda x: (x-tmp.min())/(tmp.max()-tmp.min()))
+    
+#     df_NOGA=pd.merge(df_NOGA, shortage, on = "isco", how="left")
+#     return df_NOGA
+        
+def shortage_fun(df_NOGA):
+    
+    # convert index to floats:
+    tmp = shortage["index1"].astype("str")
+    tmp = [x.replace("(","") for x in tmp]
+    tmp = [x.replace(")","") for x in tmp]
+    tmp = [x.replace(",",".") for x in tmp]
+    tmp = pd.Series(tmp).astype("float")
+    shortage["index1"] = tmp
+    shortage.rename(columns={"index1": "shortage_index"}, inplace=True)
+    
+    # normalize and store the index:
     tmp=shortage["shortage_index"]
     shortage["shortage_index_norm"]=tmp.map(lambda x: (x-tmp.min())/(tmp.max()-tmp.min()))
-    
+
+    # merge with SAKE/NOGA and return df
     df_NOGA=pd.merge(df_NOGA, shortage, on = "isco", how="left")
     return df_NOGA
-        
+    
 SAKE_dat=shortage_fun(SAKE_dat)
 SAKE_dat.head()
 len(SAKE_dat)
 
 #%% WRITE CSV
 
-#SAKE_dat.to_csv(dropbox_path+"erstellte daten/Greenness_Shortage_NOGA_Region.csv", sep=';') # old version
 SAKE_dat.to_csv("C:/Users/Matthias/Dropbox/NFP 73 (WWZ intern)/Daten/erstellte daten/Greenness_Shortage_NOGA_Region_AllYears.csv", sep=';')
 
 
