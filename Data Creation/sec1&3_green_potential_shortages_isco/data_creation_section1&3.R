@@ -1,7 +1,7 @@
 ############################################
-# Purpose: Use this Script to get the data #      
+# Purpose: Use this script to get the data #      
 #          on green potential and shortages#
-#          of occupations in the report    #
+#          of occupations in the report.   #
 # Date:    05.06.2020                      #
 # Authors: Matthias Niggli, CIEB/Uni Basel #
 #          Christian Rutzer, CIEB/Uni Basel# 
@@ -11,21 +11,15 @@
 ############# load packages ############# 
 library("dplyr")
 
-############# set paths ############# 
-# rm(list = ls())
-# mainDir1 <- ""
-# mainDir2 <- ""
-# 
-# if (file.exists(mainDir1)){
-# 	setwd(file.path(mainDir1))
-# } else {
-# 	if (file.exists(mainDir2)){
-# 		setwd(file.path(mainDir2))
-# 	}
-# }
 
+############# set directories #############
+# (1) make sure current directory is the repository directory ("green potential")
+getwd()
+
+
+############# load and process the data #############
 ## Read green potential and shortage of isco occupations
-isco_list <- read.csv2(paste0(getwd(), "/Data Creation/sec1&3_green_potential_shortages_isco/isco_list.csv"))
+isco_list <- read.csv2("Data Creation/sec1&3_green_potential_shortages_isco/isco_list.csv")
 colnames(isco_list) <- c("ISCO", "Occupation", "Estimated Green Potential", "Shortage Indicator")
 isco_list$ISCO <- as.character(isco_list$ISCO)
 
@@ -47,5 +41,5 @@ isco_shortage$`Shortage Indicator` <- as.numeric(isco_shortage$`Shortage Indicat
 ## save the list of data.frames in a list
 isco_list <- list(isco_green = isco_green,
                   isco_shortage = isco_shortage)
-isco_list %>% saveRDS(paste0(getwd(), "/Report/data_section1&3.RDS"))
+#isco_list %>% saveRDS(paste0(getwd(), "/Report/data_section1&3.RDS"))
 

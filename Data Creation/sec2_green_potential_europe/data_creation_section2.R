@@ -1,44 +1,48 @@
-## Datengenerierung für Web-App "green potential" / CR fully functional 20.5.2020
-
+############################################
+# Purpose: Use this script to generate the #
+#          map in the web report.          #
+# Date:    07.06.2020                      #
+# Authors: Christian Rutzer, CIEB/Uni Basel#
+#          Matthias Niggli, CIEB/Uni Basel #
+############################################
 
 ############# load packages ############# 
-require(foreign)
-require(dplyr)
-require(ggplot2)
-require(data.table)
-require(plyr)
-library(viridis)
-library(Rmisc)
-library(scales)
-require(cowplot)
-require(grid)
-require(tidyverse)
-require(ggalt)
-library(glmnet)
-library(kableExtra)
-require(xtable)
-require(countrycode)
+#require(foreign)
+require("dplyr")
+require("ggplot2")
+require("data.table")
+require("plyr")
+library("viridis")
+# library(Rmisc)
+# library(scales)
+# require(cowplot)
+# require(grid)
+# require(tidyverse)
+# require(ggalt)
 library('scales')
-require(rlist)
+# require(rlist)
 library("rworldmap")
 library("maps")
 
-############# set path #############
-mainDir1 <- "C:/Users/nigmat01/Dropbox"
-mainDir2 <- "C:/Users/Matthias/Dropbox"
-mainDir3 <- "C:/Users/christian rutzer/Dropbox"
-if (file.exists(mainDir1)==T){
-        path <- mainDir1}else{
-                if (file.exists(mainDir2)){
-                        path <- mainDir2}else{
-                                path <- mainDir3}
-        }
 
-## Load data of green potential estimates
-lasso.pred.table <- read.csv2(paste0(path, "/NFP 73/Output/paper green potential in europe/Daten/lasso_three_isco.csv"))
+############# set directories #############
+# (1) make sure current directory is the repository directory ("green potential")
+getwd()
+
+# (2) set ELFS_path to where the ELFS data is stored:
+# ELFS_path <- xxxxxxxxxxxxxxxxxxxxxxxx
+ELFS_path <- "X:/_shared/Projekt - Green Open Economy/dat.2011.ml.RDS"
+
+
+############# load and process the data #############
+
+## Load data of green potential estimates at 3-digit ISCO level:
+lasso.pred.table <- read.csv2("Data Creation/sec2_green_potential_europe/green_three_isco.csv")
 
 ## Following data has to saved on the wwz-shared driver due to privacy and security contract with the BFS 
-dat.2011 <- readRDS("X:/_shared/Projekt - Green Open Economy/dat.2011.ml.RDS")
+#dat.2011 <- readRDS("X:/_shared/Projekt - Green Open Economy/dat.2011.ml.RDS")
+dat.2011 <- readRDS("ELFS_path")
+
 dat.2011$num.new <- 1
 setDT(dat.2011)[, ges := sum(num.new), list(isco, iso, year, emp)]
 dat.2011 <- mutate(dat.2011, y.2012 = case_when(emp == 1 & year == 2012 & ges >= 20 ~ 1, TRUE ~ 0), y.2016 = case_when(emp == 1 & year == 2016 & ges >= 20 ~ 1, TRUE ~ 0))
@@ -96,6 +100,6 @@ eu_map <- filter(world_map, iso %in% countries)
 ## Add map and green potential together
 plot.data <- left_join(eu_map, dat_fin, by = "iso", all.y = T)
 plot.data <- filter(plot.data, is.na(iso) != T) 
-saveRDS(plot.data, paste0(getwd(), "/Report/data_section2.rds"))
+#saveRDS(plot.data, paste0(getwd(), "/Report/data_section2.rds"))
 
 

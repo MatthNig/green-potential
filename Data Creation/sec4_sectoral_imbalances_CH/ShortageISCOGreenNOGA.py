@@ -3,15 +3,9 @@ import numpy as np
 import pandas as pd
 import os
 
-# repo_path = xxxxxxxxxxxxxxxxxxxx # state the path of of the repository
-repo_path = "C:/Users/Matthias/Documents/GithubRepos/green-potential/"
+repo_path = xxxxxxxxxxxxxxxxxxxx # state the path to the "green potential" repository
+SAKE_path = xxxxxxxxxxxxxxxxx # set the path to where the raw SAKE data is stored on your machine
 os.chdir(repo_path)
-
-def SAKE_path_fun(laufwerk):
-    SAKE_path=laufwerk+":/Daten/"
-    return SAKE_path
-SAKE_path=SAKE_path_fun("X") # set the path where the SAKE data is stored on your computer
-
 print("Libraries are loaded and directories are set.")
 
 #%% LOAD SAKE DATA SUBSET TO VARIABLES OF INTEREST
@@ -49,11 +43,8 @@ def subSAKE_fun(df):
     df.rename(columns = {"BFU5I":"isco","EM03":"NOGA","B023":"Region", "IXPXHJ": "Gewicht","year": "year"}, inplace=True)
     return df
 
-
-#SAKE_dat=data_loading("2019")
 SAKE_dat = data_loading("2015")
 SAKE_dat=subSAKE_fun(SAKE_dat)
-
 
 for year in range(2016, 2020):
     df = data_loading(year = str(year))
@@ -68,16 +59,6 @@ print("available years: ", SAKE_dat.year.unique())
 
 #%% MERGE WITH GREEN POTENTIAL
 
-# def load_green():
-#     # df=pd.read_csv(dropbox_path+"ISCO/isco_list.csv",sep=";").loc[:,["isco","norm.lasso.task"]]
-#     # df=pd.read_csv(repo_path+"Report/isco_list.csv",sep=";").loc[:,["ISCO","green"]]
-#     df.rename(columns = {df.columns[1]: df.columns[1].replace(".","_")}, inplace=True)
-#     df.rename(columns = {df.columns[0]: "isco"}, inplace=True)
-#     return df
-
-#green=load_green()
- 
-# new version ------------
 def load_isco():
     df=pd.read_csv(repo_path+"Data Creation/sec1&3_green_potential_shortages_isco/isco_list.csv",sep=";")
     df.rename(columns = {df.columns[1]: df.columns[1].replace(".","_")}, inplace=True)
@@ -90,7 +71,6 @@ shortage = green.drop("green", axis = 1)
 green = green.drop("index1", axis = 1)
 green["green"] = [x.replace(",",".") for x in green["green"]]
 green["green"] = green["green"].astype("float")
-# -----------------
 
 print("number of 4-digit ISCO occupations :", len(green))
 SAKE_dat=SAKE_dat.merge(green,on="isco", how = "left")
@@ -137,17 +117,6 @@ print(SAKE_dat.head())
 
 #%% MERGE WITH SHORTAGE INDICATORS
 
-# def shortage_fun(df_NOGA):
-#     shortage=pd.read_excel("C:/Users/Matthias/Dropbox/NFP 73/Output/paper green potential in europe/Daten/indicators_4digit.xlsx")
-#     shortage = shortage.loc[:, ["job", "index1"]]
-#     shortage.rename(columns={"job": "isco", "index1": "shortage_index"}, inplace=True)
-    
-#     tmp=shortage["shortage_index"]
-#     shortage["shortage_index_norm"]=tmp.map(lambda x: (x-tmp.min())/(tmp.max()-tmp.min()))
-    
-#     df_NOGA=pd.merge(df_NOGA, shortage, on = "isco", how="left")
-#     return df_NOGA
-        
 def shortage_fun(df_NOGA):
     
     # convert index to floats:
@@ -172,7 +141,6 @@ SAKE_dat.head()
 len(SAKE_dat)
 
 #%% WRITE CSV
-
-SAKE_dat.to_csv("C:/Users/Matthias/Dropbox/NFP 73 (WWZ intern)/Daten/erstellte daten/Greenness_Shortage_NOGA_Region_AllYears.csv", sep=';')
+#SAKE_dat.to_csv("xxxxxxxxxxx", sep=';')
 
 

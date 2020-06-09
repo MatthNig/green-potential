@@ -26,6 +26,15 @@ if (file.exists(mainDir1)==T){
                                 path <- mainDir3}
         }
 
+############# set directories #############
+
+# (1) verify that the current working directory is the repository directory ("green potential")
+getwd()
+
+# (2) set SAKE_path to where the SAKE data is stored:
+# SAKE_path <- xxxxxxxxxxxxxxxxxxxxxxxx
+SAKE_path <- paste(path, "/Daten/erstellte daten/Greenness_Shortage_NOGA_Region_AllYears.csv", sep= "")
+
 
 ############# create correspondance frame between OECD value added and rest #########
 noga_oecd <- data.frame(noga = c("10", "11", "12", "13", "14", "15", "16", "17", "18", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "35", "36", "37", "38", "39", "41", "42", "43"),
@@ -48,9 +57,8 @@ ValueAdded <- ValueAdded %>%
 ValueAdded <- filter(ValueAdded, NOGA2digit %in% noga_oecd$oecd)
 
 ############# load EUROSTAT greenhouse gas emission data #############
-GHG_CH <- read.csv(paste(path,"/Daten/erstellte daten/EUROSTAT_GHG_CH.csv",
-                         sep=""),
-                   sep=",", na.strings = ":", dec = ".", header=T) # data is from 2013-2017 i.e. 5 year window
+GHG_CH <- read.csv("Data Creation/sec4_sectoral_imbalances_CH/EUROSTAT_GHG_CH.csv",
+                   na.strings = ":", dec = ".", header=T) # data is from 2013-2017 i.e. 5 year window
 GHG_CH <- select(GHG_CH, NACE_R2, TIME, Value)
 GHG_CH$NACE_R2 <- as.character(GHG_CH$NACE_R2)
 GHG_CH$Value <- as.character(GHG_CH$Value)
@@ -150,7 +158,7 @@ GHG_CH <- NULL
 ValueAdded <- NULL
 
 ############# load employment and industry data (SAKE) with shortage indicators (from BSS): #############
-Greenness_Shortage_ISCO_NOGA <- read.csv(paste(path, "/Daten/erstellte daten/Greenness_Shortage_NOGA_Region_AllYears.csv", sep= ""),
+Greenness_Shortage_ISCO_NOGA <- read.csv(SAKE_path,
                                          encoding = "UTF-8", sep=";", 
                                          header=T, row.names = 1)
 
@@ -223,6 +231,5 @@ df <- setDT(df)[, lapply(.SD, function(x)subset(x, is.na(Handelbarkeit[1]) != T 
 df <- df %>% group_by(NOGA2digit) %>% mutate(Handelbarkeit = zoo::na.locf(Handelbarkeit), GHG_per_ValueAdded = zoo::na.locf(GHG_per_ValueAdded), NOGAS_NAMES = zoo::na.locf(NOGAS_NAMES)) %>% as.data.frame()
 
 ############# save the dataset for the ShinyApp: ############# 
-# maybe better save it as a .csv for non RUsers...
 #saveRDS(df, paste(getwd(), "/Report/data_section4.rds", sep = ""))
 

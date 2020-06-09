@@ -19,7 +19,6 @@ weighting_fun <- function(thres){
         if(length(NOGA_discard) > 0){
                 Greenness_Shortage_ISCO_NOGA <- subset(Greenness_Shortage_ISCO_NOGA, !NOGA2digit %in% NOGA_discard)
         }
-#        Greenness_Shortage_ISCO_NOGA <- subset(Greenness_Shortage_ISCO_NOGA, !NOGA2digit %in% NOGA_discard)
 
         # subset the data according to threshold & convert grouping variables
         Greenness_Shortage_ISCO_NOGA <- subset(Greenness_Shortage_ISCO_NOGA, green >= thres)
