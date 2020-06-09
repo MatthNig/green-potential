@@ -23,6 +23,7 @@ library('scales')
 # require(rlist)
 library("rworldmap")
 library("maps")
+library(countrycode)
 
 
 ############# set directories #############
@@ -33,7 +34,6 @@ getwd()
 # ELFS_path <- xxxxxxxxxxxxxxxxxxxxxxxx
 ELFS_path <- "X:/_shared/Projekt - Green Open Economy/dat.2011.ml.RDS"
 
-
 ############# load and process the data #############
 
 ## Load data of green potential estimates at 3-digit ISCO level:
@@ -41,7 +41,7 @@ lasso.pred.table <- read.csv2("Data Creation/sec2_green_potential_europe/green_t
 
 ## Following data has to saved on the wwz-shared driver due to privacy and security contract with the BFS 
 #dat.2011 <- readRDS("X:/_shared/Projekt - Green Open Economy/dat.2011.ml.RDS")
-dat.2011 <- readRDS("ELFS_path")
+dat.2011 <- readRDS(ELFS_path)
 
 dat.2011$num.new <- 1
 setDT(dat.2011)[, ges := sum(num.new), list(isco, iso, year, emp)]
@@ -80,26 +80,25 @@ dat_fin <- do.call(rbind, lapply(seq(0.4, 0.8, .05), function(x) share_green(x))
 dat_fin <- mutate(dat_fin, iso = countrycode(iso, "iso2c", "iso3c"))
 dat_fin$iso[is.na(dat_fin$iso) == T] <- "GBR" 
 
-## Add countries shown in the map but having not green potential value 
-c_added <- as.data.frame(cbind(do.call(rbind, replicate(length(unique(dat_fin$cut_off)), as.matrix(data.frame(iso = countrycode(c("EE","PL","BY","LV","LU","UA","RS","BA","HR","AL","BG","RO","SI","ME","MD","MK","LT"), "iso2c", "iso3c"), share_green = NA)), simplify = FALSE)),
-cut_off = rep(seq(0.4, 0.8, .05), length(unique(dat_fin$cut_off))))) %>% mutate(cut_off = as.numeric(as.character(cut_off)), share_green = as.numeric(as.character(share_green)))
+## Add countries shown in the map but having no green potential value 
+c_added <- as.data.frame(cbind(do.call(rbind, replicate(length(unique(dat_fin$cut_off)), as.matrix(data.frame(iso = c("KOV", countrycode(c("PL","BY", "LU","UA","RS","BA","HR","AL","BG","RO","SI","ME","MD","MK"), "iso2c", "iso3c")), share_green = NA)), simplify = FALSE)), cut_off = rep(seq(0.4, 0.8, .05), each = 15))) %>% mutate(cut_off = as.numeric(as.character(cut_off)), share_green = as.numeric(as.character(share_green)))
 
 dat_fin <- rbind.fill(dat_fin, c_added)
 
 ### Create data for EU map of green potential 
 world_map <- map_data("world")
 world_map <- mutate(world_map, iso = countrycode(region, "country.name.en", "iso3c"))
-world_map[world_map$region=="Kosovo","iso"]<-"KOS"
+world_map[world_map$region=="Kosovo","iso"]<-"KOV"
 world_map <- filter(world_map, !(region %in% c("Antarctica", "Greenland",
                                                "French Southern and Antarctic Lands")) &
                             !subregion %in% c("Ile d'Oleron","Svalbard","Jan Mayen"))
 countries<-as.character(unique(dat_fin$iso))
-countries<-c(countries,"KOS")
+countries<-c(countries,"KOV")
 eu_map <- filter(world_map, iso %in% countries)
 
 ## Add map and green potential together
 plot.data <- left_join(eu_map, dat_fin, by = "iso", all.y = T)
 plot.data <- filter(plot.data, is.na(iso) != T) 
-#saveRDS(plot.data, paste0(getwd(), "/Report/data_section2.rds"))
+saveRDS(plot.data, paste0(getwd(), "/Report/data_section2.rds"))
 
 

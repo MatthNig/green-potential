@@ -1,21 +1,19 @@
 /* Whole document: */
-* {
-  font-family: "Candara" !important;
-}
 
-body{
-  font-family: "Bookman body";
+body{margin-top: 0px;
+   margin:0;
+  font-family: "Candara";
   font-size: 14pt;
 }
 /* Headers */
 h4{
   font-size: 18pt;
-  font-family: "Comic Sans MS";
+  font-family: "Candara";
 }
 
 h5{
   font-size: 16pt;
-  font-family: "Bookman Header";
+  font-family: "Candara";
 }
 
 img { 
@@ -25,3 +23,9 @@ img {
 
 td { font-size: 11pt; }
 
+.header {
+	background-image:url("cieb_logo.jpg");
+	height:70px;
+	width:110%;
+	margin:-10px;
+}
