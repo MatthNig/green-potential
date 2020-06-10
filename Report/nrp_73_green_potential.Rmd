@@ -190,9 +190,9 @@ renderPlotly({
 	        config(displayModeBar = F) %>% 
 	        layout(xaxis=list(fixedrange=TRUE)) %>% 
 	        layout(yaxis=list(fixedrange=TRUE))
-	})
+})
 ```
-<span style="font-size:0.8em">*Source: Own calcualations based on the <a href="https://ec.europa.eu/eurostat/web/microdata/european-union-labour-force-survey" target = "_blank">European Union Labour Force Survey</a> and our green potential estimates of occupations.*</span>
+<span style="font-size:0.8em">*Source: Own calcualations based on the <a href="https://ec.europa.eu/eurostat/web/microdata/european-union-labour-force-survey" target = "_blank">European Union Labour Force Survey</a> and our green potential estimates of occupations. All the data is available on  <a href=https://github.com/matthnig/green-potential target="_blank">GitHub<a/>.*</span>
 
 <br>
 
@@ -285,6 +285,9 @@ renderPlotly({
                 layout(xaxis=list(fixedrange=TRUE)) %>% 
                 layout(yaxis=list(fixedrange=TRUE))
         })
+
+
+              
 ```
 <span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data. All the data is available on  <a href=https://github.com/matthnig/green-potential target="_blank">GitHub<a/>.*</span>
 
@@ -306,13 +309,14 @@ renderDT(server = FALSE,
                   filter = "top", # location of column filters
                   rownames= FALSE,
                   options = list(buttons = c('colvis', 'copy', 'csv', 'excel', 'pdf', 'print'), scrollY = 180, scroller = TRUE, scrollX = T, pageLength = 20, dom = 'Btp', 
-                                 columnDefs=list(list(targets=0:2, className="dt-left")))) %>% 
+                                 columnDefs=list(list(targets=0:3, className="dt-left")))) %>% 
                 formatStyle(3, target = "row", 
                             backgroundColor = styleInterval(seq(0,1,0.05),
                                                             colorRampPalette(table_col, alpha = TRUE)(22)
                                                             )
                             )
         )
+
 
 ```
 <span style="font-size:0.8em">*Source: <a href="https://bss-basel.ch" target ="blank">BSS</a> and own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data. A (\*) next to an occupation's title indicates that there are relatively few observations used to calculate its shortage (less than 50). All the data is also available on  <a href=https://github.com/matthnig/green-potential target="_blank">GitHub<a/>.*</span>
@@ -363,7 +367,7 @@ renderPlotly({
         NOGAS <- sec4_dat[sec4_dat$NOGAS_NAMES %in% input$NOGAS_NAMES, "NOGA2digit"] # get selected NOGA codes
         
         plot2_data <- subset(sec4_dat,
-               round(THRES, 2) == input$cutOff & # selected cutOff (use round() to make sure numbers match)
+               round(THRES, 2) == round(input$cutOff, 2) & # selected cutOff (use round() to make sure numbers match)
                Region == "Schweiz" &
                 # Region %in% input$REGIONEN & # selected Region(s)
                NOGA2digit %in% NOGAS & # selected NOGA codes 
@@ -388,8 +392,8 @@ renderPlotly({
                            input$cutOff,")", sep=""))+
                 ylab(paste("Shortage of jobs with green potential in Switzerl. \n (green potential of at least ",
                            input$cutOff,")",sep = ""))+
-                ylim(c(-1, 2.5))+
-                xlim(c(0, 0.6))+
+                ylim(c(min(sec4_dat$WeightedShortageGreen), max(sec4_dat$WeightedShortageGreen)))+
+                xlim(c(0, max(sec4_dat$green_emp_share)))+
                 guides(color = FALSE)+
                 # scale_color_viridis(option="viridis", begin = 0.7, end = 0.4, discrete = FALSE, name = "None")+
                 scale_color_gradient(low = color_continuous[1],
@@ -415,7 +419,7 @@ Let us focus on the “Chemical Industry” (D20) to interpret the graph. On the
 
 Now, the combination of large employment shares and high shortages of workers with high green potential seems to be potentially problematic. The reason is that shortages might get worse if greening further triggers demand for workers with high green potential. Thus, industries that locate in the upper right of the graph could be the ones that are more strongly affected by greening. If these industries additionally produce relatively tradable products (the size of the point is larger) and have a rather high emission intensity (the color of the point is darker), production relocation to foreign countries could take place in the worst case.  
 
-For Switzerland, this seems not to be a major concern for many industries. An exception could be the chemical industry. Since chemical products are easily tradable and rather pollution intensive, there the shortage of labour with green potential could be problematic. But it should be noted that our descriptive analysis focused on industries and is, therefore, on a rather high level of aggregation. At the level of firms or plants, the situation could be rather different. Consequently, our simple descriptive analysis should be understood as general tendencies rather than precise predictions. 
+For Switzerland, this seems not to be a major concern for many industries. An exception could be the chemical industry. Since chemical products are easily tradable and rather pollution intensive, the observed shortage of labour with green potential could be problematic. But it should be noted that our descriptive analysis focused on industries and is, therefore, on a rather high level of aggregation. At the level of firms or plants, the situation could be rather different. Consequently, our simple descriptive analysis should be understood as general tendencies rather than precise predictions. 
 
 <br>
 
