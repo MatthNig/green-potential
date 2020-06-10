@@ -96,7 +96,7 @@ renderDT(server = FALSE,
                   class = "display nowrap compact", # style
                   filter = "top", # location of column filters
                   rownames= FALSE,
-                  options = list(buttons = c('colvis', 'copy', 'csv', 'excel', 'pdf', 'print'), scrollY = 180, scroller = TRUE, pageLength = 20, dom = 'Btp', scrollX = T,
+                  options = list(buttons = c('colvis', 'copy', 'csv', 'excel', 'pdf', 'print'), scrollY = 180, scroller = TRUE, pageLength = 20, dom = '<"top"l>t<"bottom"B>', scrollX = T,
                                  columnDefs=list(list(targets=0:2, className="dt-left")))) %>% 
                 formatStyle(0:3, target = "row", 
                             backgroundColor = styleInterval(seq(0, 1, 0.05),
@@ -201,7 +201,7 @@ renderText({
     dat <- mydata()
     dat <- distinct(dat, iso, .keep_all = T)
 
-    paste0("The map provides insights into the question, which countries could be especially well prepared to cope with a green transition. In general, the Scandinavian countries, Germany, France, the Czech Republic, Estonia and Switzerland seem to be well prepared for a green transition. For example, these countries have employment shares of around 8-10% when setting the green potential threshold to a high value of 0.6. Even with such a rather high threshold, green potential seems to be substantial in these countries. Thus, these countries could likely benefit if demand for greener products and technologies increases. These conclusions should also be covered by your own selections. Based on your choice of setting the cut-off to ", input$cut, ", the country with the largest share is ", 
+    paste0("The map provides insights into the question, which countries could be especially well prepared to cope with a green transition. In general, the Scandinavian countries, Germany, France, the Czech Republic, Estonia and Switzerland seem to be well prepared for a green transition. For example, these countries have employment shares of around 8-10% when setting the green potential threshold to a high value of 0.6. Even with such a rather high threshold, green potential seems to be substantial in these countries. Thus, these countries could likely benefit if demand for greener products and technologies increases. If you change your selection, the conclusion should remain the same. Based on your choice of setting the cut-off to ", input$cut, ", the country with the largest share is ", 
     unique(dat[which(max(dat$share_green, na.rm = T)==dat$share_green), "region"])," with ",
     round(unique(dat[which(max(dat$share_green, na.rm = T)==dat$share_green), "share_green"])*100, 0), 
 "% of it's workforce above that cut-off. The country with the second largest share is ",
@@ -223,7 +223,7 @@ Of course, the amount of green potential is not the only determinant of how well
 
 Switzerland is a small open economy. It is, for example, associated with a high level of trade, capital flows and migration. These characteristics influence the country’s industry structure and, consequently, domestic labor demand and supply. All of these factors affect the success of a green transition in Switzerland. Over the next paragraphs, we are going to investigate them in more detail. 
 
-We start by looking at production patterns of Swiss industries and discuss their implications for a Green Transition. Afterwards, we turn to domestic supply and demand for workers - with a special focus on those with high green potential. Further, we highlight potential labor market shortages and reflect on their implications for specific industries. Note that we consider only manufacturing industries, which is a common restriction in the relevant scientific literature. (see e.g. <a href=https://www.journals.uchicago.edu/doi/abs/10.1086/698859?journalCode=jaere target=”blank”> Vona et al., 2018 </a>). Moreover, we also exclude some industries for which no reliable data is available (e.g. “19 Manufacture of coke and refined petroleum products”).
+We start by looking at production patterns of Swiss industries and discuss their implications for a Green Transition. Afterwards, we turn to domestic supply and demand for workers - with a special focus on those with high green potential. Further, we highlight potential labor market shortages and reflect on their implications for specific industries. Note that we consider only manufacturing industries, which is a common restriction in the relevant scientific literature (see e.g. <a href=https://www.journals.uchicago.edu/doi/abs/10.1086/698859?journalCode=jaere target=”blank”> Vona et al., 2018 </a>). Moreover, we also exclude some industries for which no reliable data is available (e.g. “19 Manufacture of coke and refined petroleum products”).
 
 Let us start with production patterns across industries. Of course, production technologies vary between industries. This leads to different emission intensities among industries. Ultimately, however, greening will require all industries to reduce their emissions. This will be much more challenging for some than for others. In fact, as long as not a worldwide consensus among tougher environmental regulations are found, some industries may consider moving parts of their production to other countries (see e.g. <a href= https://onlinelibrary.wiley.com/doi/full/10.1111/j.1468-2354.2008.00478.x target=”blank”>Levinson and Taylor, 2008</a> for a discussion of this phenomenon). Emissions would then only be shifted or even increased, but not mitigated.
 
@@ -263,9 +263,9 @@ plot1_data <- subset(sec4_dat,
 renderPlotly({
         ggplotly(
                 ggplot(data = plot1_data, aes(x = Handelbarkeit, y= log(GHG_per_ValueAdded),
-                                              # color = log(GHG_per_ValueAdded), size = Handelbarkeit, 
+                                              color = log(GHG_per_ValueAdded), size = Handelbarkeit, 
                                               label = Industry))+
-                geom_point(alpha = 0.7, size = 2)+
+                geom_point(alpha = 0.7) +
                 # geom_text(aes(label = NOGA2digit), size = 3, check_overlap = FALSE, nudge_x = +0.08, nudge_y = +0.05)+
                 xlab("Tradeability")+
                 ylab("Greenhouse gas emissions per value added\n (in logs)")+
@@ -308,7 +308,7 @@ renderDT(server = FALSE,
                   class = "display nowrap compact", # style
                   filter = "top", # location of column filters
                   rownames= FALSE,
-                  options = list(buttons = c('colvis', 'copy', 'csv', 'excel', 'pdf', 'print'), scrollY = 180, scroller = TRUE, scrollX = T, pageLength = 20, dom = 'Btp', 
+                  options = list(buttons = c('colvis', 'copy', 'csv', 'excel', 'pdf', 'print'), scrollY = 180, scroller = TRUE, scrollX = T, pageLength = 20, dom = '<"top"l>t<"bottom"B>', 
                                  columnDefs=list(list(targets=0:3, className="dt-left")))) %>% 
                 formatStyle(3, target = "row", 
                             backgroundColor = styleInterval(seq(0,1,0.05),

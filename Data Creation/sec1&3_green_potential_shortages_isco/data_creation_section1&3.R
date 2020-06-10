@@ -27,7 +27,7 @@ colnames(isco_green) <- c("ISCO", "Occupation", "Estimated Green Potential")
 
 ## Clean the data frame
 isco_list <- isco_list[complete.cases(isco_list), ]
-isco_list <- mutate(isco_list, index1 = ifelse(str_detect(index1, "\\(") == T, paste0(gsub("\\(|\\)", "", index1), "*"), as.character(index1))) %>% mutate(index1 = gsub(",", ".", index1))
+isco_list <- mutate(isco_list, Title = ifelse(str_detect(index1, "\\(") == T, paste0(Title, "*"), as.character(Title))) %>% mutate(index1 = gsub("\\(|\\)", "", index1)) %>% mutate(index1 = gsub(",", ".", index1))
 colnames(isco_list) <- c("ISCO", "Occupation", "Estimated Green Potential", "Shortage Indicator")
 isco_list$ISCO <- as.character(isco_list$ISCO)
 
