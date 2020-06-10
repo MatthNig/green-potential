@@ -231,5 +231,6 @@ df <- setDT(df)[, lapply(.SD, function(x)subset(x, is.na(Handelbarkeit[1]) != T 
 df <- df %>% group_by(NOGA2digit) %>% mutate(Handelbarkeit = zoo::na.locf(Handelbarkeit), GHG_per_ValueAdded = zoo::na.locf(GHG_per_ValueAdded), NOGAS_NAMES = zoo::na.locf(NOGAS_NAMES)) %>% as.data.frame()
 
 ############# save the dataset for the ShinyApp: ############# 
-#saveRDS(df, paste(getwd(), "/Report/data_section4.rds", sep = ""))
+df <- filter(df, Region == "Schweiz") # subset to Switzerland only, since we do no longer take regions into account. 
+# saveRDS(df, paste(getwd(), "/Report/data_section4.rds", sep = ""))
 
