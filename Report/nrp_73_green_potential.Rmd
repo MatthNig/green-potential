@@ -193,7 +193,6 @@ renderPlotly({
 	                      ),
 	        tooltip = c("label"), dynamicTicks = FALSE) %>% 
                 config(displaylogo = FALSE,
-                collaborate = FALSE,
                 modeBarButtonsToRemove = list(
            'sendDataToCloud',
            'autoScale2d',
@@ -302,7 +301,6 @@ renderPlotly({
                       ),
                 tooltip = c("label"), dynamicTicks = T) %>%
      config(displaylogo = FALSE,
-                collaborate = FALSE,
                 modeBarButtonsToRemove = list(
            'sendDataToCloud',
            'autoScale2d',
@@ -450,7 +448,6 @@ renderPlotly({
                       ),
                 tooltip = c("label"), dynamicTicks = FALSE) %>%
      config(displaylogo = FALSE,
-                collaborate = FALSE,
                 modeBarButtonsToRemove = list(
            'sendDataToCloud',
            'autoScale2d',
