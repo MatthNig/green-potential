@@ -13,5 +13,5 @@ This folder contains all the non-confidential raw data and all the corresponding
 This is where the code for the interactive analysis is available ([`nrp_73_green_potential.Rmd`]). 
 
 ### Example
-![](Data Creation/eu_map.png)<!-- -->
+![](./Data Creation/eu_map.png)
 
