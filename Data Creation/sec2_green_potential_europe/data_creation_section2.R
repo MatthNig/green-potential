@@ -59,6 +59,7 @@ return(dat_agg_tot)
 dat_fin <- do.call(rbind, lapply(seq(0.4, 0.8, .05), function(x) share_green(x)))
 dat_fin <- mutate(dat_fin, iso = countrycode(iso, "iso2c", "iso3c"))
 dat_fin$iso[is.na(dat_fin$iso) == T] <- "GBR" 
+dat_fin <- filter(dat_fin, iso != "ROU")
 
 ## Add countries shown in the map but having no green potential value 
 c_added <- as.data.frame(cbind(do.call(rbind, replicate(length(unique(dat_fin$cut_off)), as.matrix(data.frame(iso = c("KOV", countrycode(c("PL","BY", "LU","UA","RS","BA","HR","AL","BG","RO","SI","ME","MD","MK"), "iso2c", "iso3c")), share_green = NA)), simplify = FALSE)), cut_off = rep(seq(0.4, 0.8, .05), each = 15))) %>% mutate(cut_off = as.numeric(as.character(cut_off)), share_green = as.numeric(as.character(share_green)))
@@ -79,6 +80,6 @@ eu_map <- filter(world_map, iso %in% countries)
 ## Add map and green potential together
 plot.data <- left_join(eu_map, dat_fin, by = "iso", all.y = T)
 plot.data <- filter(plot.data, is.na(iso) != T) 
-#saveRDS(plot.data, paste0(getwd(), "/Report/data_section2.rds"))
+# saveRDS(plot.data, paste0(getwd(), "/Report/data_section2.rds"))
 
 

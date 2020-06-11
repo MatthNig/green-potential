@@ -218,7 +218,7 @@ renderPlotly({
 ```{r, echo = F}
 renderText({
     dat <- mydata()
-    dat <- distinct(dat, iso, .keep_all = T)
+    dat <- distinct(dat, region, iso, .keep_all = T) 
 
     paste0("The map provides insights into the question, which countries could be especially well prepared to cope with a green transition. In general, the Scandinavian countries, Germany, France, the Czech Republic, Estonia and Switzerland seem to be well prepared for a green transition. For example, these countries have employment shares of around 8-10% when setting the green potential threshold to a high value of 0.6. Even with such a rather high threshold, green potential seems to be substantial in these countries. Thus, these countries could likely benefit if demand for greener products and technologies increases. If you change your selection, the conclusion should remain the same. Based on your choice of setting the cut-off to ", input$cut, ", the country with the largest share is ", 
     unique(dat[which(max(dat$share_green, na.rm = T)==dat$share_green), "region"])," with ",
