@@ -92,7 +92,16 @@ table_col <- c("#bdbdbd", "#7AD151FF")
 
 # make the table
 renderDT(server = FALSE, 
-        datatable(isco_green,  extensions = c('Scroller', 'Buttons'), 
+        datatable(isco_green,  
+                   callback=JS(
+                   '$("button.buttons-copy").css("font-size","11px"); 
+                    $("button.buttons-csv").css("font-size","11px"); 
+                    $("button.buttons-colvis").css("font-size","11px"); 
+                    $("button.buttons-excel").css("font-size","11px"); 
+                    $("button.buttons-pdf").css("font-size","11px"); 
+                    $("button.buttons-print").css("font-size","11px"); 
+                    return table;'),
+                  extensions = c('Scroller', 'Buttons'), 
                   class = "display nowrap compact", # style
                   filter = "top", # location of column filters
                   rownames= FALSE,
@@ -134,10 +143,6 @@ plot.data <- data.frame(plot.data)
 maxN <- function(x, N){
   x <- na.omit(x)
   len <- length(x)
-  if(N>len){
-    warning('N greater than length(x).  Setting N=length(x)')
-    N <- length(x)
-  }
   sort(x,partial=len-N+1)[len-N+1]
 }
 
@@ -187,7 +192,22 @@ renderPlotly({
 	                      axis.ticks = element_blank()
 	                      ),
 	        tooltip = c("label"), dynamicTicks = FALSE) %>% 
-	        config(displayModeBar = F) %>% 
+                config(displaylogo = FALSE,
+                collaborate = FALSE,
+                modeBarButtonsToRemove = list(
+           'sendDataToCloud',
+           'autoScale2d',
+           'resetScale2d',
+           'hoverClosestCartesian',
+           'hoverCompareCartesian',
+           'zoom2d', 
+           'pan2d',
+           'select2d',
+           'lasso2d',
+           'zoomIn2d', 
+           'zoomOut2d',
+           'toggleSpikelines'
+         )) %>% 
 	        layout(xaxis=list(fixedrange=TRUE)) %>% 
 	        layout(yaxis=list(fixedrange=TRUE))
 })
@@ -227,7 +247,7 @@ We start by looking at production patterns of Swiss industries and discuss their
 
 Let us start with production patterns across industries. Of course, production technologies vary between industries. This leads to different emission intensities among industries. Ultimately, however, greening will require all industries to reduce their emissions. This will be much more challenging for some than for others. In fact, as long as not a worldwide consensus among tougher environmental regulations are found, some industries may consider moving parts of their production to other countries (see e.g. <a href= https://onlinelibrary.wiley.com/doi/full/10.1111/j.1468-2354.2008.00478.x target=”blank”>Levinson and Taylor, 2008</a> for a discussion of this phenomenon). Emissions would then only be shifted or even increased, but not mitigated.
 
-Is this concern justified for Swiss industries? Let us look at the following graph. The vertical axis (y-axis) depicts emission intensities of Swiss industries, which we measure in tons of emissions of CO2 equivalents per million of value added. Thus, the more upward-positioned an industry on the vertical axis is, the more pollution-intensive is its production and the more urgent its adjustment to greening will be. The data on emissions covers the period 2013 to 2017 and comes from <a href="https://ec.europa.eu/eurostat/cache/metadata/de/env_ac_ainah_r2_esms.htm" target ="blank">Eurostat</a>. Information on value added is from the <a href="http://www.oecd.org/sti/ind/stanstructuralanalysisdatabase.htm" target ="blank">OECD</a> for the year 2015. Both data sources are available online. The horizontal axis (x-axis) provides an approximation of how easily tradeable products of any industry are. “Tradability” is measured as the sum of total imports and exports per value added. A high tradability indicates that production does not have to be closely located to consumers. Therefore, the more right-positioned an industry on the horizontal axis is, the easier it is to trade its products and the likelier relocation becomes if greening takes place. The trade data to calculate tradability comes from the <a href="https://www.ezv.admin.ch/ezv/en/home/topics/swiss-foreign-trade-statistics/daten.html" target ="blank">Swiss Federal Customs Administration</a> for the year 2018 and is also publicly available. The information on sectoral value added is again from the <a href="http://www.oecd.org/sti/ind/stanstructuralanalysisdatabase.htm" target ="blank">OECD</a>.
+Is this concern justified for Swiss industries? Let us look at the following graph. The vertical axis (y-axis) depicts emission intensities of Swiss industries, which we measure in tons of emissions of CO2 equivalents per million of value added. Thus, the more upward-positioned an industry on the vertical axis is, the more pollution-intensive is its production and the more urgent its adjustment to greening will be. And in addition, to make it more visible, the color of the point is darker. The data on emissions covers the period 2013 to 2017 and comes from <a href="https://ec.europa.eu/eurostat/cache/metadata/de/env_ac_ainah_r2_esms.htm" target ="blank">Eurostat</a>. Information on value added is from the <a href="http://www.oecd.org/sti/ind/stanstructuralanalysisdatabase.htm" target ="blank">OECD</a> for the year 2015. Both data sources are available online. The horizontal axis (x-axis) provides an approximation of how easily tradeable products of any industry are. “Tradability” is measured as the sum of total imports and exports per value added. A high tradability indicates that production does not have to be closely located to consumers. Therefore, the more right-positioned an industry on the horizontal axis is, the easier it is to trade its products and the likelier relocation becomes if greening takes place. As before with the color, we indicate this also by a larger size of the point. The trade data to calculate tradability comes from the <a href="https://www.ezv.admin.ch/ezv/en/home/topics/swiss-foreign-trade-statistics/daten.html" target ="blank">Swiss Federal Customs Administration</a> for the year 2018 and is also publicly available. The information on sectoral value added is again from the <a href="http://www.oecd.org/sti/ind/stanstructuralanalysisdatabase.htm" target ="blank">OECD</a>.
 
 <br>
 
@@ -281,8 +301,22 @@ renderPlotly({
                       axis.line = element_line()
                       ),
                 tooltip = c("label"), dynamicTicks = T) %>%
-                config(displayModeBar = F) %>% 
-                layout(xaxis=list(fixedrange=TRUE)) %>% 
+     config(displaylogo = FALSE,
+                collaborate = FALSE,
+                modeBarButtonsToRemove = list(
+           'sendDataToCloud',
+           'autoScale2d',
+           'resetScale2d',
+           'hoverClosestCartesian',
+           'hoverCompareCartesian',
+           'zoom2d', 
+           'pan2d',
+           'select2d',
+           'lasso2d',
+           'zoomIn2d', 
+           'zoomOut2d',
+           'toggleSpikelines'
+         )) %>%                 layout(xaxis=list(fixedrange=TRUE)) %>% 
                 layout(yaxis=list(fixedrange=TRUE))
         })
 
@@ -304,7 +338,16 @@ Before describing the main results, we want to give you the opportunity to exami
 ```{r, echo = F}
 isco_shortage <- isco_list[["isco_shortage"]]
 renderDT(server = FALSE, 
-        datatable(isco_shortage,  extensions = c('Scroller', 'Buttons'),
+        datatable(isco_shortage,  
+                  callback=JS(
+                   '$("button.buttons-copy").css("font-size","11px"); 
+                    $("button.buttons-csv").css("font-size","11px"); 
+                    $("button.buttons-colvis").css("font-size","11px"); 
+                    $("button.buttons-excel").css("font-size","11px"); 
+                    $("button.buttons-pdf").css("font-size","11px"); 
+                    $("button.buttons-print").css("font-size","11px"); 
+                    return table;'),
+                  extensions = c('Scroller', 'Buttons'),
                   class = "display nowrap compact", # style
                   filter = "top", # location of column filters
                   rownames= FALSE,
@@ -406,8 +449,22 @@ renderPlotly({
                       axis.line = element_line()
                       ),
                 tooltip = c("label"), dynamicTicks = FALSE) %>%
-                config(displayModeBar = F) %>% 
-                layout(xaxis = list(fixedrange=TRUE)) %>% 
+     config(displaylogo = FALSE,
+                collaborate = FALSE,
+                modeBarButtonsToRemove = list(
+           'sendDataToCloud',
+           'autoScale2d',
+           'resetScale2d',
+           'hoverClosestCartesian',
+           'hoverCompareCartesian',
+           'zoom2d', 
+           'pan2d',
+           'select2d',
+           'lasso2d',
+           'zoomIn2d', 
+           'zoomOut2d',
+           'toggleSpikelines'
+         )) %>%                 layout(xaxis = list(fixedrange=TRUE)) %>% 
                 layout(yaxis = list(fixedrange=TRUE))
         })
 ```
