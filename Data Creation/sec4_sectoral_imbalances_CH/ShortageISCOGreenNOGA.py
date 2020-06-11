@@ -1,10 +1,20 @@
+############################################
+# Purpose: Use this script to process the  #
+#          raw SAKE data.                  #
+# Date:    03.06.2020                      #
+# Authors: Matthias Niggli, CIEB/Uni Basel #
+############################################
+
 #%% LOAD LIBRARIES & SET DIRECTORIES
 import numpy as np
 import pandas as pd
 import os
 
-repo_path = xxxxxxxxxxxxxxxxxxxx # state the path to the "green potential" repository
-SAKE_path = xxxxxxxxxxxxxxxxx # set the path to where the raw SAKE data is stored on your machine
+# (1) state the path to the "green potential" repository
+repo_path = "xxxxxxxxxxxxxxxxxxxx" 
+
+# (2) SAKE data is confidential. If you have access to it, set "SAKE_path" to where the raw data is stored.
+SAKE_path = "xxxxxxxxxxxxxxxxx"
 os.chdir(repo_path)
 print("Libraries are loaded and directories are set.")
 
@@ -104,8 +114,6 @@ def data_proc(NOGAdigit, df):
     df["Region"]=df["Region"].astype("category")
     df=df.loc[df["Region"].astype(int).isin(np.arange(1,8))==True,:]
     df["Region"].cat.remove_unused_categories(inplace=True)
-    # Reg=list(pd.read_csv(dropbox_path[:-6]+"R Codes/Dynamic output/data_creation/sec3/SAKEGrossregion.txt",
-    #                      encoding="latin",header=None)[0].astype(str))
     Reg=list(pd.read_csv(repo_path+"Data Creation/sec4_sectoral_imbalances_CH/SAKEGrossregion.txt",
                          encoding="latin",header=None)[0].astype(str))
     df["Region"].cat.rename_categories(Reg,inplace=True)
@@ -137,6 +145,8 @@ def shortage_fun(df_NOGA):
     return df_NOGA
     
 SAKE_dat=shortage_fun(SAKE_dat)
+
+# summarize final df
 SAKE_dat.head()
 len(SAKE_dat)
 
