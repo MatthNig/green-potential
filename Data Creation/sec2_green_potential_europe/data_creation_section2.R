@@ -7,32 +7,23 @@
 ############################################
 
 ############# load packages ############# 
-#require(foreign)
 require("dplyr")
 require("ggplot2")
 require("data.table")
 require("plyr")
 library("viridis")
-# library(Rmisc)
-# library(scales)
-# require(cowplot)
-# require(grid)
-# require(tidyverse)
-# require(ggalt)
 library('scales')
-# require(rlist)
 library("rworldmap")
 library("maps")
-library(countrycode)
+library("countrycode")
 
 
 ############# set directories #############
 # (1) make sure current directory is the repository directory ("green potential")
 getwd()
 
-# (2) set ELFS_path to where the ELFS data is stored:
-# ELFS_path <- xxxxxxxxxxxxxxxxxxxxxxxx
-ELFS_path <- "X:/_shared/Projekt - Green Open Economy/dat.2011.ml.RDS"
+# (2) ELFS data is confidential. If you have access to it, set "ELFS_path" to where the data is stored
+ELFS_path <- "xxxxxxxxxxxxxxxxxxxxxxxx"
 
 ############# load and process the data #############
 
@@ -40,7 +31,6 @@ ELFS_path <- "X:/_shared/Projekt - Green Open Economy/dat.2011.ml.RDS"
 lasso.pred.table <- read.csv2("Data Creation/sec2_green_potential_europe/green_three_isco.csv")
 
 ## Following data has to saved on the wwz-shared driver due to privacy and security contract with the BFS 
-#dat.2011 <- readRDS("X:/_shared/Projekt - Green Open Economy/dat.2011.ml.RDS")
 dat.2011 <- readRDS(ELFS_path)
 
 dat.2011$num.new <- 1
@@ -49,16 +39,6 @@ dat.2011 <- mutate(dat.2011, y.2012 = case_when(emp == 1 & year == 2012 & ges >=
 setDT(dat.2011)[, test.20 := y.2012[year == 2012]*y.2016, list(isco, iso)]
 setDT(dat.2011)[, test.2012.2016 := sum(test.20), list(isco, iso)]
 dat.2011 <- filter(dat.2011, test.2012.2016 >= 1) %>% dplyr::select(-ges, -y.2012, -y.2016,-test.20,-test.2012.2016)
-
-##########################################################################################################
-## Add informtion on employment at the sector level. Not implemented so far in the web output / 20.5.2020
-# dat.2011 <- subset(dat.2011,	!(iso == "DE" & year == 2011))
-# dat.2011 <- mutate(dat.2011, migr = case_when(iso != "CH" & as.numeric(migr) > 0 & as.numeric(migr) < 11 | iso == "CH" & as.numeric(migr) > 0 & as.numeric(migr) < 3652.5 ~ "yes", TRUE ~ "no"))
-# dat.2011 <- mutate(dat.2011, sector = case_when(sector %in% c("A", "B") ~ "Resources Sector",
-# 																								sector %in% c("C") ~ "Manufacturing Sector",
-# 																								sector %in% c("D", "E", "F", "DE") ~ "Energy & Construction",
-# 																								T ~ "Services Sector")) 
-##########################################################################################################
 
 dat.2011 <- filter(dat.2011, !(isco %in% c("-5", "00", "010", "011", "021", "031")))
 dat.2011 <- mutate(dat.2011, isco = as.character(isco))
@@ -99,6 +79,6 @@ eu_map <- filter(world_map, iso %in% countries)
 ## Add map and green potential together
 plot.data <- left_join(eu_map, dat_fin, by = "iso", all.y = T)
 plot.data <- filter(plot.data, is.na(iso) != T) 
-saveRDS(plot.data, paste0(getwd(), "/Report/data_section2.rds"))
+#saveRDS(plot.data, paste0(getwd(), "/Report/data_section2.rds"))
 
 
