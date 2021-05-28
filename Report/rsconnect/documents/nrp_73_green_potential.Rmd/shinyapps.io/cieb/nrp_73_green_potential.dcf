@@ -5,8 +5,8 @@ account: cieb
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2431563
-bundleId: 3256666
+bundleId: 4650981
 url: https://cieb.shinyapps.io/nrp_73_green_potential/
-when: 1591876208.85289
+when: 1622207553.43868
 asMultiple: FALSE
 asStatic: FALSE
