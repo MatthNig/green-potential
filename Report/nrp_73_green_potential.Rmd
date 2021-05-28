@@ -48,7 +48,7 @@ library(dplyr)
 
 ## <font color="green"> **Greening and the Labor Market** </font>
 
-*June 2020*, by <a href="https://cieb.unibas.ch/de/test/" target = "_blank">Matthias Niggli</a> and <a href="https://cieb.unibas.ch/de/test/" target = "_blank">Christian Rutzer</a>
+*June 2020*, by <a href="https://cieb.unibas.ch/de/team/" target = "_blank">Matthias Niggli</a> and <a href="https://cieb.unibas.ch/de/team/" target = "_blank">Christian Rutzer</a>
 
 <img src="nfp73_img.jpg" alt="Smiley face">
 
@@ -114,7 +114,7 @@ renderDT(server = FALSE,
                             )
         )
 ```
-<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data. All the data is also available on  <a href=https://github.com/cieb-unibas/green-potential target="_blank">GitHub<a/>.*</span>
+<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data. All the data is also available on <a href="https://github.com/cieb-unibas/green-potential" target = "_blank">GitHub</a>*.</span>
 
 <br>
 
@@ -184,13 +184,13 @@ renderPlotly({
 	                             color="black",size=0.1)  +
 	                scale_fill_viridis(option = "viridis", begin = 0.3, end = 0.8, 
 	                                   name= paste0("Share of workforce\nhaving a green potential above ", cut_value)) +
-	                theme(legend.position = 'top',
+	                theme(
 	                      panel.grid.minor =  element_blank(),
 	                      panel.background = element_blank(),
 	                      axis.title = element_blank(),
 	                      axis.text = element_blank(),
-	                      axis.ticks = element_blank()
-	                      ),
+	                      axis.ticks = element_blank(),
+	                      legend.position = "none"),
 	        tooltip = c("label"), dynamicTicks = FALSE) %>% 
                 config(displaylogo = FALSE,
                 modeBarButtonsToRemove = list(
@@ -211,7 +211,7 @@ renderPlotly({
 	        layout(yaxis=list(fixedrange=TRUE))
 })
 ```
-<span style="font-size:0.8em">*Source: Own calcualations based on the <a href="https://ec.europa.eu/eurostat/web/microdata/european-union-labour-force-survey" target = "_blank">European Union Labour Force Survey</a> and our green potential estimates of occupations. All the data is available on  <a href=https://github.com/cieb-unibas/green-potential target="_blank">GitHub<a/>.*</span>
+<span style="font-size:0.8em">*Source: Own calcualations based on the <a href="https://ec.europa.eu/eurostat/web/microdata/european-union-labour-force-survey" target = "_blank">European Union Labour Force Survey</a> and our green potential estimates of occupations. All the data is available on <a href="https://github.com/cieb-unibas/green-potential" target="_blank">GitHub</a>.*</span>
 
 <br>
 
@@ -297,8 +297,7 @@ renderPlotly({
                 guides(color = FALSE)+
                 theme(axis.title = element_text(face="bold",size=10),
                       panel.background = element_blank(),
-                      axis.line = element_line()
-                      ),
+                      axis.line = element_line()),
                 tooltip = c("label"), dynamicTicks = T) %>%
      config(displaylogo = FALSE,
                 modeBarButtonsToRemove = list(
@@ -321,7 +320,7 @@ renderPlotly({
 
               
 ```
-<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data. All the data is available on  <a href=https://github.com/cieb-unibas/green-potential target="_blank">GitHub<a/>.*</span>
+<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data. All the data is available on  <a href=https://github.com/cieb-unibas/green-potential target="_blank">GitHub</a>.*</span>
 
 <br>
 
@@ -360,7 +359,7 @@ renderDT(server = FALSE,
 
 
 ```
-<span style="font-size:0.8em">*Source: <a href="https://bss-basel.ch" target ="blank">BSS</a> and own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data. A (\*) next to an occupation's title indicates that there are relatively few observations used to calculate its shortage (less than 50). All the data is also available on  <a href=https://github.com/cieb-unibas/green-potential target="_blank">GitHub<a/>.*</span>
+<span style="font-size:0.8em">*Source: <a href="https://bss-basel.ch" target ="blank">BSS</a> and own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data. A (\*) next to an occupation's title indicates that there are relatively few observations used to calculate its shortage (less than 50). All the data is also available on  <a href=https://github.com/cieb-unibas/green-potential target="_blank">GitHub</a>.*</span>
 
 <br>
 
@@ -465,7 +464,7 @@ renderPlotly({
                 layout(yaxis = list(fixedrange=TRUE))
         })
 ```
-<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data. All the code to process the data is available on  <a href=https://github.com/cieb-unibas/green-potential target="_blank">GitHub<a/>.*</span>
+<span style="font-size:0.8em">*Source: Own estimations of <a href="http://cieb.unibas.ch/" target = "_blank">CIEB</a> based on <a href="https://www.onetonline.org/" target ="blank">O\*NET</a> data. All the code to process the data is available on  <a href=https://github.com/cieb-unibas/green-potential target="_blank">GitHub</a>.*</span>
 
 <br>
 
@@ -493,6 +492,22 @@ Here we briefly illustrate our approach to estimate the green potential of occup
 
 Switzerland and other countries worldwide classify their occupations according to <a href="https://www.ilo.org/public/english/bureau/stat/isco/" target = "_blank">ISCO</a>. Thus, the SOC-based data from O\*NET cannot be used directly for Swiss and European occupations. To solve this issue, we have used a crosswalk between the U.S. SOC classification and the ISCO classification to transfer skill values of U.S. occupations from the O\*NET database to ISCO occupations. With this, we have obtained skills values for ISCO occupations, which we then used as input variables $X_i$ in our trained algorithms to predict the “green potential” of ISCO occupations as shown in our tables. A more detailed description of the transfer of skills values from O\*NET to ISCO can be found in a <a href="https://edoc.unibas.ch/77038/1/20200609174745_5edfaf21c6366.pdf" target = "_blank">working paper</a> of ours.
 
-<hr>
+&nbsp;
+<hr />
+<p style="text-align: center;"><a href="https://cieb.unibas.ch" target=”_blank” style='color:black;'>Center for International Economics and Business | CIEB | Universität Basel</a></p>
 
+<!-- Add icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<p style="text-align: center;">
+    <a href="https://twitter.com/cieb_unibas/" class="fa fa-twitter" style='color:black;' target=”_blank”></a>
+    &nbsp;&nbsp;
+    <a href="https://www.linkedin.com/company/cieb-unibas" class="fa fa-linkedin" style='color:black;' target=”_blank”></a>
+    &nbsp;&nbsp;
+    <a href="https://github.com/cieb-unibas/" class="fa fa-github" style='color:black;' target=”_blank”></a>
+</p>
+
+<br>
+<br>
+<br>
 <br>
