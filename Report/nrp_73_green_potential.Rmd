@@ -35,7 +35,11 @@ library(dplyr)
   gtag('js', new Date());
   gtag('config', 'UA-71167447-1');
 </script>
+
+
 </head>
+
+
 
 <br>
 
@@ -54,7 +58,7 @@ library(dplyr)
 
 <br>
 
-**Greening the economy is expected to have major implications for the labor market. The question is whether a country’s labor market is well prepared to cope with such challenges. This depends to a large extent on the skills that workers possess, because skills are what determines the *green potential* of occupations, industries and countries. In this interactive report, we provide estimates of the green potential and illustrate differences across occupations and countries. Overall, the green potential of labor markets across Europe is quite considerable and its workforce looks well prepared for transforming towards a greener and more sustainable economy. This is especially the case for the Swiss economy, as our more in-depth analysis shows.**
+**Greening the economy is expected to have major implications for the labor market. The question is whether a country’s labor market is well prepared to cope with such challenges. This depends to a large extent on the skills that workers possess, because skills are what determines the *green potential* of occupations, industries and countries. In this interactive report, we provide estimates of the green potential and illustrate differences across occupations and countries. Overall, the green potential of labor markets across Europe is quite considerable but the corresponding occupations are also relatively scarce as these are mostly technical and engineering ones. A more in-depth analysis focusing on the Swiss economy shows that heterogeneous effects on different industries are to be expected, depending on the emission intensity, international competition, and labor scarcity.**
 
 <br>
 
@@ -74,9 +78,9 @@ The debate about labor market implications of greening the economy often manifes
 
 Both sides have their points. In fact, greening can create jobs but may also destroy jobs. From a policy perspective, it is especially important to know which occupations are likely to be affected positively and which negatively. Moreover, in order to address potential labor shortages, it is also crucial to understand which occupations are in high demand when greening occurs.
 
-With this in mind, recent research conducted by Francesco Vona, Giovanni Marin, Davide Consoli and David Popp (<a href=https://www.journals.uchicago.edu/doi/abs/10.1086/698859?journalCode=jaere target=”_blank>Vona et al., 2018</a>) argues that the skills of occupations are what matters most for their potential to perform green tasks. We call this the green potential of occupations. The basic intuition of the idea is simple: There are some skills which are especially relevant (or irrelevant) to perform green tasks. And the more (fewer) of these skills an occupation has, the higher (lower) its green potential. Hence, whether an occupation may lose or win from a green transition may depend strongly on its green potential (<a href="https://edoc.unibas.ch/77038/1/20200609174745_5edfaf21c6366.pdf" target = "_blank">Niggli and Rutzer, 2020</a>). Capturing the green potential of occupations is therefore key to profoundly addressing the concerns.
+With this in mind, recent research conducted by Francesco Vona, Giovanni Marin, Davide Consoli and David Popp (<a href=https://www.journals.uchicago.edu/doi/abs/10.1086/698859?journalCode=jaere target=”_blank>Vona et al., 2018</a>) argues that the skills of occupations are what matters most for their potential to perform green tasks. We call this the green potential of occupations. The basic intuition of the idea is simple: There are some skills which are especially relevant (or irrelevant) to perform green tasks. And the more (fewer) of these skills an occupation has, the higher (lower) its green potential. Hence, whether an occupation may lose or win from a green transition may depend strongly on its green potential (<a href="https://edoc.unibas.ch/77038/3/2020_09_EnvironmentalPolicyHeterogeneousLaborMarketEffects_NiggliRutzer_Oct2020.pdf" target = "_blank">Niggli and Rutzer, 2020</a>). Capturing the green potential of occupations is therefore key to profoundly addressing the concerns.
 
-In order to do this, we follow <a href=https://www.journals.uchicago.edu/doi/abs/10.1086/698859?journalCode=jaere target=”_blank>Vona et al. (2018)</a> and use data from <a href="https://www.onetcenter.org/reports/GreenTask.html" target = "_blank">O*NET</a> on the skills and tasks of U.S. occupations, classified according to <a href="https://www.bls.gov/soc/" target = "_blank">SOC</a>. However, because we want to estimate the green potential of European occupations, which are classified according to <a href="https://www.ilo.org/public/english/bureau/stat/isco/" target = "_blank">ISCO</a>, we use a slightly different approach. Notably, in order to predict the green potential of occupations, we train machine learning algorithms. A brief explanation of our empirical approach is given at the end of this report. In case you are interested in a more detailed discussion of the methodology, we refer you to our <a href="https://ideas.repec.org/p/bsl/wpaper/2020-03.html" target = "_blank">working paper </a>. 
+In order to do this, we follow <a href=https://www.journals.uchicago.edu/doi/abs/10.1086/698859?journalCode=jaere target=”_blank>Vona et al. (2018)</a> and use data from <a href="https://www.onetcenter.org/reports/GreenTask.html" target = "_blank">O*NET</a> on the skills and tasks of U.S. occupations, classified according to <a href="https://www.bls.gov/soc/" target = "_blank">SOC</a>. However, because we want to estimate the green potential of European occupations, which are classified according to <a href="https://www.ilo.org/public/english/bureau/stat/isco/" target = "_blank">ISCO</a>, we use a slightly different approach. Notably, in order to predict the green potential of occupations, we train machine learning algorithms. A brief explanation of our empirical approach is given at the end of this report. In case you are interested in a more detailed discussion of the methodology, we refer you to our <a href="https://ideas.repec.org/p/bsl/wpaper/2020-03.html" target = "_blank">working paper</a>. 
 
 Using this approach allows us to estimate the green potential of 322 ISCO occupations. The estimates are shown in the table below. The table allows you to search for your own occupation or filter occupations according to some green potential threshold. 
 
@@ -132,8 +136,6 @@ The result of our country-level analysis can be seen in the map below. The map i
 
 To put your chosen green potential value into perspective, recall that the mean of occupational green potential is 0.31 and the median 0.26. Thus, setting the slider to 0.55, for example, shows the employment shares of those occupations having more than twice the green potential of the median occupation. 
 
-<br>
-
 ```{r, echo = F}
 # prepare the data for the map ----------------------------------------------
 plot.data <- readRDS("data_section2.rds")
@@ -152,6 +154,8 @@ mydata <- reactive({
   plot.data_sub
   })
 ```
+
+<br>
 
 ```{r, echo = F}
 # make a slider input for the treshold ----------------------------------------------
@@ -207,8 +211,7 @@ renderPlotly({
            'zoomOut2d',
            'toggleSpikelines'
          )) %>% 
-	        layout(xaxis=list(fixedrange=TRUE)) %>% 
-	        layout(yaxis=list(fixedrange=TRUE))
+	        layout(xaxis=list(fixedrange=TRUE), yaxis=list(fixedrange=TRUE), width = ifelse(session$clientData$pixelratio > 1.7, 400, 650), height = ifelse(session$clientData$pixelratio > 1.7, 400, 400))
 })
 ```
 <span style="font-size:0.8em">*Source: Own calcualations based on the <a href="https://ec.europa.eu/eurostat/web/microdata/european-union-labour-force-survey" target = "_blank">European Union Labour Force Survey</a> and our green potential estimates of occupations. All the data is available on <a href="https://github.com/cieb-unibas/green-potential" target="_blank">GitHub</a>.*</span>
@@ -220,7 +223,7 @@ renderText({
     dat <- mydata()
     dat <- distinct(dat, region, iso, .keep_all = T) 
 
-    paste0("The map provides insights into the question, which countries could be especially well prepared to cope with a green transition. In general, the Scandinavian countries, Germany, France, the Czech Republic, Estonia and Switzerland seem to be well prepared for a green transition. For example, these countries have employment shares of around 8-10% when setting the green potential threshold to a high value of 0.6. Even with such a rather high threshold, green potential seems to be substantial in these countries. Thus, these countries could likely benefit if demand for greener products and technologies increases. If you change your selection, the conclusion should remain the same. Based on your choice of setting the cut-off to ", input$cut, ", the country with the largest share is ", 
+    paste0("The map provides insights into the question, which countries could be especially well prepared to cope with a green transition. In general, the Scandinavian countries, Germany, France, the Czech Republic, Estonia and Switzerland seem to be well prepared for a green transition. For example, these countries have employment shares of around 8-10% when setting the green potential threshold to a high value of 0.6. Even with such a rather high threshold, green potential seems to be substantial in these countries. Thus, these countries could likely benefit if demand for greener products and technologies increases. If you change your selection, the conclusion should in general remain the same. Based on your choice of setting the cut-off to ", input$cut, ", the country with the largest share is ", 
     unique(dat[which(max(dat$share_green, na.rm = T)==dat$share_green), "region"])," with ",
     round(unique(dat[which(max(dat$share_green, na.rm = T)==dat$share_green), "share_green"])*100, 0), 
 "% of it's workforce above that cut-off. The country with the second largest share is ",
@@ -229,7 +232,7 @@ renderText({
 "% and the country with the third largest share is ",
             unique(dat[which(maxN(dat$share_green, 3)==dat$share_green), "region"])," with ",
     round(unique(dat[which(maxN(dat$share_green, 3)==dat$share_green), "share_green"])*100, 0),
-"% of it's workforce above that cut-off.\n")
+"% of it's workforce above that cut-off.")
 })
 ```
 
@@ -363,7 +366,7 @@ renderDT(server = FALSE,
 
 <br>
 
-As one can see from the table, there seems to be more severe shortages in greener jobs. Recall that especially technical and engineering occupations are among those with the highest green potential. These occupations also happen to be the ones where labor markets are particularly tight. Overall, there could thus be an urgent shortage if demand for some occupations further increases due to greening. It could then become even more difficult for firms to find suitable workers to make their production technologies and products greener and more sustainable.
+As one can see from the table, there seems to be more severe shortages in occupations with higher green potential. And indeed, the mean and median shortage values among all occupations are 0.02 and 0.08, respectively, and for occupations with high green potential (ie, 0.5 or more) 0.69 and 0.67. A similar pattern emerges for other European countries, as shown in <a href="https://edoc.unibas.ch/81382/1/20210128160319_6012d237775b7.pdf" target ="blank">Lobsiger and Rutzer (2021)</a>. Recall that especially technical and engineering occupations are among those with the highest green potential. These occupations also happen to be the ones where labor markets are particularly tight. Overall, there could thus be an urgent shortage if demand for some occupations further increases due to greening. It could then become even more difficult for firms to find suitable workers to make their production technologies and products greener and more sustainable.
 
 At the same time, whether this causes problems also depends on how important these workers are in different parts of the economy. Think about it this way: If it is already hard for some industries to find occupations with high green potential today and if these same industries also depend relatively heavily on such green workers, future shortages triggered by greening could be a problem especially for those industries.
 
@@ -428,9 +431,9 @@ renderPlotly({
                                               size = Handelbarkeit))+
                 geom_point(alpha = 0.7)+
                 # geom_text(aes(label = NOGA2digit), size = 4, check_overlap = FALSE, position = position_nudge(y = +0.1))+
-                xlab(paste("Employment share of jobs with  green potential in Switzerland \n (green potential of at least ",
+                xlab(paste("Employment share of jobs with green potential\n in Switzerland (green potential of at least ",
                            input$cutOff,")", sep=""))+
-                ylab(paste("Shortage of jobs with green potential in Switzerl. \n (green potential of at least ",
+                ylab(paste("Shortage of jobs with green potential\n(green potential of at least ",
                            input$cutOff,")",sep = ""))+
                 ylim(c(min(sec4_dat$WeightedShortageGreen), max(sec4_dat$WeightedShortageGreen)))+
                 xlim(c(0, max(sec4_dat$green_emp_share)))+
@@ -468,25 +471,29 @@ renderPlotly({
 
 <br>
 
-Let us focus on the “Chemical Industry” (D20) to interpret the graph. On the national level, its employment share of occupations with a green potential of at least 0.5 is estimated to be 32\%. This is a relatively large share of total employment, which is clearly visible in the plot (i.e. the dot for the “Chemicals” tends to the right of the plot). At the same time, the average shortage for these occupations is around 1.2, which also seems to be relatively high. Accordingly, firms from that industry seem to be rather dependent on occupations with a high green potential and could already face problems hiring such workers. 
+Let us focus on the “Chemical Industry” (D20) to interpret the graph. On the national level, its employment share of occupations with a green potential of at least 0.5 is estimated to be 32\%. This is a relatively large share of total employment, which is clearly visible in the plot (i.e. the dot for the “Chemicals” tends to the right of the plot). At the same time, the average shortage for these occupations is around 1.2, which also seems to be relatively high (recall the average shortage among all Swiss occupations is 0.02). Accordingly, firms from that industry seem to be rather dependent on occupations with a high green potential and could already face problems hiring such workers. The figure also shows nicely that the scarcity of occupations increases the higher one sets the green potential threshold.   
 
-Now, the combination of large employment shares and high shortages of workers with high green potential seems to be potentially problematic. The reason is that shortages might get worse if greening further triggers demand for workers with high green potential. Thus, industries that locate in the upper right of the graph could be the ones that are more strongly affected by greening. If these industries additionally produce relatively tradable products (the size of the point is larger) and have a rather high emission intensity (the color of the point is darker), production relocation to foreign countries could take place in the worst case.  
+Now, the combination of large employment shares and high shortages of workers with high green potential seems to be potentially problematic. The reason is that shortages might get worse if greening further triggers demand for workers with high green potential. Thus, industries that locate in the upper right of the graph could be the ones that are more strongly affected by greening. If these industries additionally produce relatively tradable products (the size of the point is larger) and have a rather high emission intensity (the color of the point is darker), production relocation to foreign countries could take place in the worst case.
 
-For Switzerland, this seems not to be a major concern for many industries. An exception could be the chemical industry. Since chemical products are easily tradable and rather pollution intensive, the observed shortage of labour with green potential could be problematic. But it should be noted that our descriptive analysis focused on industries and is, therefore, on a rather high level of aggregation. At the level of firms or plants, the situation could be rather different. Consequently, our simple descriptive analysis should be understood as general tendencies rather than precise predictions. 
+For Switzerland, this seems mostly the case for the chemical industry. Since chemical products are easily tradable and rather pollution intensive, the observed shortage of labour with green potential could be problematic. But it should be noted that our descriptive analysis focused on industries and is, therefore, on a rather high level of aggregation. At the level of firms or plants, the situation could be rather different. Consequently, our simple descriptive analysis should be understood as general tendencies rather than precise predictions. 
 
 <br>
 
-#### <font color='green'> **European Labor Markets are well prepared for the Green Transition** </font>
+#### <font color='green'> **European Labor Markets have relatively high “green potential” but the corresponding occupations are also relatively scarce** </font>
 
-Overall, a significant share of workers in Europe are employed in occupations requiring skills that are important to perform green tasks. Thus, there seems to be substantial green potential in the European workforce and, generally, countries look well prepared for transforming towards greener and more sustainable economies. 
+Overall, a significant share of workers in Europe are employed in occupations requiring skills that are important to perform green tasks. Thus, there seems to be substantial green potential in the European workforce. But it is also important to note that occupations with high green potential are primarily technical and engineering occupations, which tend to be in short supply due to strong demand by firms. 
 
-When focusing on Switzerland, it seems that the country’s workforce is particularly well equipped with the necessary resources for a green transition. When we also consider the labor demand side, i.e., the demand of firms, shortages of jobs with high green potential do not seem to be a severe threat for most Swiss manufacturing industries--with one exception, the chemical industry. Overall, however, there is good news from a labor market perspective:  Switzerland seems to be well prepared for the green transition. 
+When focusing on Switzerland, it seems that the country’s workforce is particularly well equipped with the necessary resources for a green transition. Nevertheless, heterogeneous effects on different industries are to be expected, depending on the emission intensity, international competition, and labor scarcity. With this regard, a green transformation could be especially challenging for the Swiss chemical industry, since it has a rather high pollution intensity, stiff international competition and scarcity of labor with high green potential. 
+
+Finally, as in other countries too, providing enough technical skills and occupations seems to be crucial for a successful green transformation of the Swiss economy. This challenging task will likely become even more difficult due to the increased demand for STEM-skills caused by the digital transformation. 
+
+
 
 <br>
 
 <hr>
 
-#### <font color='green'> **Methodological Approach to Estimate Green Potential** </font>
+#### <font color='green'> **Methodological Approach to Estimate the Green Potential** </font>
 
 Here we briefly illustrate our approach to estimate the green potential of occupations. For a detailed description, we refer to a recent <a href="https://ideas.repec.org/p/bsl/wpaper/2020-03.html " target = "_blank">working paper</a> of ours. In short, the green potential of an occupation depends on whether it can fulfill the tasks that are demanded in a green economy. This, in turn, depends on the skills that workers possess. The <a href="https://www.onetcenter.org/reports/GreenTask.html" target = "_blank">O*NET</a> database features information on “green tasks” as well as on skills for every U.S. occupation classified according to the <a href="https://www.bls.gov/soc/" target = "_blank">SOC classification</a>. Using these skill values as input features $X_i$ and the number of green tasks as the outcome $Y_i$ allows us to train machine learning algorithms that predict the “green potential” of U.S. occupations. We have trained four standard algorithms: <a href="https://en.wikipedia.org/wiki/Ordinary_least_squares" target = "_blank">Simple OLS</a>, <a href="https://en.wikipedia.org/wiki/Lasso_(statistics)" target = "_blank">LASSO</a>, <a href="https://en.wikipedia.org/wiki/Random_forest">Random Forest</a> and <a href="https://en.wikipedia.org/wiki/Tikhonov_regularization" target = "_blank">Ridge regression</a>.
 
@@ -494,7 +501,7 @@ Switzerland and other countries worldwide classify their occupations according t
 
 &nbsp;
 <hr />
-<p style="text-align: center;"><a href="https://cieb.unibas.ch" target=”_blank” style='color:black;'>Center for International Economics and Business | CIEB | Universität Basel</a></p>
+<p style="text-align: center;"><a href="https://cieb.unibas.ch" target=”_blank” style='color:black;'>Center for International Economics and Business | CIEB | University of Basel</a></p>
 
 <!-- Add icon library -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
