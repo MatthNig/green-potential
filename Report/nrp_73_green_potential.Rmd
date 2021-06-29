@@ -58,7 +58,7 @@ library(dplyr)
 
 <br>
 
-**Greening the economy is expected to have major implications for the labor market. The question is whether a country’s labor market is well prepared to cope with such challenges. This depends to a large extent on the skills that workers possess, because skills are what determines the *green potential* of occupations, industries and countries. In this interactive report, we provide estimates of the green potential and illustrate differences across occupations and countries. Overall, the green potential of labor markets across Europe is quite considerable but the corresponding occupations are also relatively scarce as these are mostly technical and engineering ones. A more in-depth analysis focusing on the Swiss economy shows that heterogeneous effects on different industries are to be expected, depending on the emission intensity, international competition, and labor scarcity.**
+**Greening the economy is expected to have major implications for the labor market. The question is whether a country’s labor market is well prepared to cope with such challenges. This depends to a large extent on the skills that workers possess, because skills are what determines the *green potential* of occupations, industries and countries. In this interactive report, we provide estimates of the green potential and illustrate differences across occupations and countries. Overall, the green potential of labor markets across Europe is quite considerable but the corresponding occupations are also relatively scarce as these are mostly technical and natural science ones. A more in-depth analysis focusing on the Swiss economy shows that heterogeneous effects on different industries are to be expected, depending on the emission intensity, international competition, and labor scarcity.**
 
 <br>
 
@@ -481,11 +481,11 @@ For Switzerland, this seems mostly the case for the chemical industry. Since che
 
 #### <font color='green'> **European Labor Markets have relatively high “green potential” but the corresponding occupations are also relatively scarce** </font>
 
-Overall, a significant share of workers in Europe are employed in occupations requiring skills that are important to perform green tasks. Thus, there seems to be substantial green potential in the European workforce. But it is also important to note that occupations with high green potential are primarily technical and engineering occupations, which tend to be in short supply due to strong demand by firms. 
+Overall, a significant share of workers in Europe are employed in occupations requiring skills that are important to perform green tasks. Thus, there seems to be substantial green potential in the European workforce. But it is also important to note that occupations with high green potential are primarily technical and natural science occupations, which tend to be in short supply due to strong demand by firms. 
 
 When focusing on Switzerland, it seems that the country’s workforce is particularly well equipped with the necessary resources for a green transition. Nevertheless, heterogeneous effects on different industries are to be expected, depending on the emission intensity, international competition, and labor scarcity. With this regard, a green transformation could be especially challenging for the Swiss chemical industry, since it has a rather high pollution intensity, stiff international competition and scarcity of labor with high green potential. 
 
-Finally, as in other countries too, providing enough technical skills and occupations seems to be crucial for a successful green transformation of the Swiss economy. This challenging task will likely become even more difficult due to the increased demand for STEM-skills caused by the digital transformation. 
+Finally, as in other countries too, providing enough technical and natural science skills and occupations seems to be crucial for a successful green transformation of the Swiss economy. This challenging task will likely become even more difficult due to the increased demand for such skills caused by the digital transformation. 
 
 
 
